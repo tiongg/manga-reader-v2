@@ -1,0 +1,117 @@
+import FadeInView from '@/components/FadeInView';
+import { colors } from '@/config/theme';
+import { FromMain } from '@/types/navigation/nav-params';
+import { getMangaTitle } from '@/utils/get-manga-title';
+import { localeOrFirst } from '@/utils/locale-or-first';
+import { Box, Pressable, Text } from '@gluestack-ui/themed';
+import { useNavigation } from '@react-navigation/native';
+import { BlurView } from 'expo-blur';
+import { Chapter, Manga } from 'mangadex-client';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+type TopOverlayProps = {
+  manga: Manga;
+  chapter: Chapter;
+};
+
+type BottomOverlayProps = {
+  currentPage: number;
+  totalPages: number;
+};
+
+export type MangaReaderOverlayProps = TopOverlayProps & BottomOverlayProps;
+
+function BottomOverlay({ currentPage, totalPages }: BottomOverlayProps) {
+  const inset = useSafeAreaInsets();
+
+  return (
+    <FadeInView
+      style={{
+        position: 'absolute',
+        width: '100%',
+        height: 30 + inset.bottom,
+        bottom: 0,
+        backgroundColor: colors.bg2,
+      }}
+    >
+      <Text color={colors.words1} textAlign='center' paddingTop='$3'>
+        {currentPage + 1} / {totalPages}
+      </Text>
+      <Box height={inset.bottom} />
+    </FadeInView>
+  );
+}
+
+function TopOverlay({ manga, chapter }: TopOverlayProps) {
+  const navigation = useNavigation<FromMain>();
+  const inset = useSafeAreaInsets();
+  const { volume, chapter: chapterNumber, title } = chapter.attributes!;
+
+  const mangaTitle = getMangaTitle(manga);
+  const chapterTitle = `${
+    volume ? `Vol. ${volume}, ` : ''
+  }Chapter ${chapterNumber}${title ? ` - ${title}` : ''}`;
+
+  return (
+    <FadeInView
+      style={{
+        position: 'absolute',
+        width: '100%',
+      }}
+    >
+      <BlurView
+        style={{
+          height: 35 + inset.top,
+          borderBottomColor: colors.bg5,
+          borderBottomWidth: 1,
+          justifyContent: 'center',
+          padding: 12,
+        }}
+        tint='dark'
+        intensity={100}
+      >
+        <Box height={inset.top} />
+        <Pressable
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
+          <Text color={colors.btn} fontWeight='400' fontSize='$md'>
+            Close
+          </Text>
+        </Pressable>
+      </BlurView>
+      <BlurView
+        style={{ height: 55, justifyContent: 'center', padding: 10 }}
+        tint='dark'
+        intensity={100}
+      >
+        <Text
+          color={colors.words1}
+          fontSize='$sm'
+          lineHeight='$sm'
+          numberOfLines={1}
+        >
+          {mangaTitle}
+        </Text>
+        <Text color={colors.words2} fontSize='$xs' numberOfLines={1}>
+          {chapterTitle}
+        </Text>
+      </BlurView>
+    </FadeInView>
+  );
+}
+
+export default function MangaReaderOverlay({
+  manga,
+  chapter,
+  currentPage,
+  totalPages,
+}: MangaReaderOverlayProps) {
+  return (
+    <>
+      <TopOverlay manga={manga} chapter={chapter} />
+      <BottomOverlay currentPage={currentPage} totalPages={totalPages} />
+    </>
+  );
+}
