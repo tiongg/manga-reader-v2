@@ -1,10 +1,11 @@
-import { ScreenProps } from '@/types/navigation/nav-params';
-import { useGetMangaAndChapters, useGetReadMarkers } from '@/utils/queries';
-import { ScrollView, Spinner, VStack, View, Text } from '@gluestack-ui/themed';
-import MangaHeaderBar from '../manga-details/components/MangaHeaderBar';
+import { ScrollView, Spinner, Text, View, VStack } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import TopInset from '@/components/TopInset';
 import { colors } from '@/config/theme';
+import { ScreenProps } from '@/types/navigation/nav-params';
+import { useGetMangaAndChapters, useGetReadMarkers } from '@/utils/queries';
+import MangaHeaderBar from '../manga-details/components/MangaHeaderBar';
 import ChapterSelectItem from './ChapterSelectItem';
 
 export type ChapterSelectPageProps = {
@@ -41,11 +42,11 @@ export default function ChapterSelectPage({
       <View paddingBottom={inset.bottom} flex={1} backgroundColor={colors.bg2}>
         <MangaHeaderBar manga={manga} />
         <ScrollView>
-          <Text color={colors.words1} padding='$3.5' fontWeight='600'>
+          <Text color={colors.words1} padding="$3.5" fontWeight="600">
             {chapters.length} chapters
           </Text>
           <VStack flex={1} backgroundColor={colors.bg2}>
-            {chapters.map(chapter => (
+            {chapters.map((chapter) => (
               <ChapterSelectItem
                 key={chapter.id!}
                 chapter={chapter}

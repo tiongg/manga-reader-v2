@@ -1,4 +1,21 @@
+import { memo, useEffect, useRef, useState } from 'react';
+import { Dimensions, FlatList } from 'react-native';
+import {
+  Box,
+  Image,
+  Pressable,
+  Spinner,
+  Text,
+  Toast,
+  ToastTitle,
+  useToast,
+} from '@gluestack-ui/themed';
+import * as Haptics from 'expo-haptics';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { match } from 'ts-pattern';
+
 import PageSpinner from '@/components/PageSpinner';
+import TopInset from '@/components/TopInset';
 import { colors } from '@/config/theme';
 import { ScreenProps } from '@/types/navigation/nav-params';
 import {
@@ -7,23 +24,7 @@ import {
   useGetMangaAndChapters,
 } from '@/utils/queries';
 import { useBoolean } from '@/utils/use-boolean';
-import {
-  Box,
-  Image,
-  Spinner,
-  Pressable,
-  Text,
-  useToast,
-  Toast,
-  ToastTitle,
-} from '@gluestack-ui/themed';
-import { memo, useEffect, useRef, useState } from 'react';
-import { Dimensions, FlatList } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MangaReaderOverlay from './MangaReaderOverlay';
-import TopInset from '@/components/TopInset';
-import { match } from 'ts-pattern';
-import * as Haptics from 'expo-haptics';
 
 export type MangaReaderPageProps = {
   mangaId: string;
@@ -46,19 +47,19 @@ function PageItem({ url, index, onPress }: PageProps) {
     <Pressable onPress={onPress}>
       {isLoading && (
         <Box
-          height='$full'
-          width='$full'
-          position='absolute'
-          justifyContent='center'
+          height="$full"
+          width="$full"
+          position="absolute"
+          justifyContent="center"
         >
-          <Spinner size='large' />
+          <Spinner size="large" />
         </Box>
       )}
       <Image
         source={url}
         alt={`Page ${index + 1}`}
-        resizeMode='contain'
-        margin='auto'
+        resizeMode="contain"
+        margin="auto"
         style={{
           height: '100%',
           width: Dimensions.get('window').width,
@@ -73,8 +74,8 @@ function PageItem({ url, index, onPress }: PageProps) {
 function EndOfManga() {
   return (
     <Box
-      justifyContent='center'
-      alignItems='center'
+      justifyContent="center"
+      alignItems="center"
       style={{
         height: '100%',
         width: Dimensions.get('window').width,
@@ -157,7 +158,7 @@ export default function MangaReaderPage({
   }
 
   const currentChapterIndex = chapters.findIndex(
-    chapter => chapter.id === chapterId
+    (chapter) => chapter.id === chapterId
   );
   if (currentChapterIndex === -1) {
     return (
@@ -201,7 +202,7 @@ export default function MangaReaderPage({
             ))
         }
         keyExtractor={(x, i) => `page-${i}`}
-        onMomentumScrollEnd={event => {
+        onMomentumScrollEnd={(event) => {
           const currentX = event.nativeEvent.contentOffset.x;
           setCurrentPage(calculateCurrentPage(currentX));
         }}

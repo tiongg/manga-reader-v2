@@ -1,4 +1,5 @@
 import { LocalizedString } from 'mangadex-client';
+
 import { LOCALE_LANGUAGE } from './constants';
 
 /**

@@ -1,8 +1,9 @@
-import { colors } from '@/config/theme';
-import { FromMain } from '@/types/navigation/nav-params';
 import { Pressable, Text } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { Chapter, Manga } from 'mangadex-client';
+
+import { colors } from '@/config/theme';
+import { FromMain } from '@/types/navigation/nav-params';
 
 export type ChapterSelectItemProps = {
   chapter: Chapter;
@@ -23,8 +24,8 @@ export default function ChapterSelectItem({
 
   return (
     <Pressable
-      paddingHorizontal='$4'
-      paddingVertical='$3.5'
+      paddingHorizontal="$4"
+      paddingVertical="$3.5"
       borderBottomColor={colors.bg5}
       borderBottomWidth={1}
       onPress={() => {

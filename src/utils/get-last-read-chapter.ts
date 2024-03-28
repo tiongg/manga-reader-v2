@@ -9,5 +9,5 @@ export function getLastReadChapter(
   chapters: Chapter[],
   readMarkers: Set<string>
 ) {
-  return chapters.find(chapter => readMarkers.has(chapter.id!));
+  return chapters.find((chapter) => readMarkers.has(chapter.id!));
 }

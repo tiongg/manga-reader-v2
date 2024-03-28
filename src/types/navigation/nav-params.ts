@@ -1,9 +1,10 @@
-import type { CompositeScreenProps } from '@react-navigation/native';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { CompositeScreenProps } from '@react-navigation/native';
 import type {
   NativeStackNavigationProp,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
+
 import { ChapterSelectPageProps } from '@/features/chapter-select/ChapterSelectPage';
 import { MangaDetailsPageProps } from '@/features/manga-details/MangaDetailsPage';
 import { MangaReaderPageProps } from '@/features/manga-reader/MangaReaderPage';

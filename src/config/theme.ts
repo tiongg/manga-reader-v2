@@ -1,5 +1,5 @@
-import { createConfig } from '@gluestack-ui/themed';
 import { config as defaultConfig } from '@gluestack-ui/config';
+import { createConfig } from '@gluestack-ui/themed';
 
 //https://gluestack.io/ui/docs/theme-configuration/customizing-theme/eject-library
 export const theme = createConfig({

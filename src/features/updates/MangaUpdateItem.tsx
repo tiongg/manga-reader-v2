@@ -1,13 +1,14 @@
+import { memo } from 'react';
+import { Box, Image, Pressable, Text } from '@gluestack-ui/themed';
+import { useNavigation } from '@react-navigation/native';
+import { Chapter, Manga } from 'mangadex-client';
+
+import { colors } from '@/config/theme';
 import { FromMain } from '@/types/navigation/nav-params';
 import { getCoverArtUrl } from '@/utils/cover-art-url';
-import { Box, Pressable, Image, Text } from '@gluestack-ui/themed';
-import { Chapter, Manga } from 'mangadex-client';
-import { useNavigation } from '@react-navigation/native';
-import { colors } from '@/config/theme';
+import { getMangaTitle } from '@/utils/get-manga-title';
 import { getRelationship } from '@/utils/get-relationship';
 import { CoverArtRelation } from '@/utils/missing-types';
-import { memo } from 'react';
-import { getMangaTitle } from '@/utils/get-manga-title';
 
 export function MangaUpdateItem({
   chapter,
@@ -30,21 +31,21 @@ export function MangaUpdateItem({
         navigate.navigate('MangaDetails', { mangaId: manga.id! });
       }}
     >
-      <Box paddingHorizontal='$2' flex={1}>
-        <Box gap='$2' display='flex' flexDirection='row'>
+      <Box paddingHorizontal="$2" flex={1}>
+        <Box gap="$2" display="flex" flexDirection="row">
           <Image
             source={coverArtUrl}
             alt={`${mangaTitle} cover`}
-            resizeMode='cover'
+            resizeMode="cover"
             width={70}
             height={100}
           />
           <Box flex={1}>
             <Text
-              fontWeight='$bold'
+              fontWeight="$bold"
               color={colors.words1}
               numberOfLines={2}
-              ellipsizeMode='tail'
+              ellipsizeMode="tail"
             >
               {mangaTitle}
             </Text>

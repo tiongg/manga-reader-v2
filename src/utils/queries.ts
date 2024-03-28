@@ -1,4 +1,3 @@
-import { queryClient } from '@/config/query-client';
 import { useQuery } from '@tanstack/react-query';
 import _ from 'lodash';
 import {
@@ -8,6 +7,8 @@ import {
   MangaService,
   ReadMarkerService,
 } from 'mangadex-client';
+
+import { queryClient } from '@/config/query-client';
 import { getRelationship } from './get-relationship';
 
 //Pagination limit
@@ -55,17 +56,17 @@ export async function getFeedWithManga(offset: number = 0) {
     includesArray: ['manga'],
   });
   const feedIds = (feed.data ?? []).map(
-    chapter => getRelationship(chapter, 'manga').id!
+    (chapter) => getRelationship(chapter, 'manga').id!
   );
   const mangaData = await getMangas(feedIds);
   const mangaMap = new Map(
-    (mangaData.data ?? []).map(manga => [manga.id!, manga])
+    (mangaData.data ?? []).map((manga) => [manga.id!, manga])
   );
   //Manually replace the manga relationship with the full manga data
   for (const feedData of feed.data ?? []) {
     const mangaId = getRelationship(feedData, 'manga').id!;
     const indexOfRelationship = (feedData.relationships ?? []).findIndex(
-      r => r.type === 'manga'
+      (r) => r.type === 'manga'
     );
     if (indexOfRelationship === -1) {
       continue;
@@ -113,7 +114,7 @@ export async function getChapterImageUrls(
   } = chapterData.chapter!;
   const dataMode = dataSaver ? 'data-saver' : 'data';
   const urls = ((dataSaver ? dataSaverUrls : dataUrls) ?? []).map(
-    url => `${baseUrl}/${dataMode}/${hash}/${url}`
+    (url) => `${baseUrl}/${dataMode}/${hash}/${url}`
   );
   return urls;
 }

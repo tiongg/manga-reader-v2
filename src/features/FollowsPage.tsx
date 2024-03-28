@@ -1,5 +1,6 @@
+import { Text, View } from '@gluestack-ui/themed';
+
 import PageSpinner from '@/components/PageSpinner';
-import { View, Text } from '@gluestack-ui/themed';
 
 export default function FollowsPage() {
   return <PageSpinner />;

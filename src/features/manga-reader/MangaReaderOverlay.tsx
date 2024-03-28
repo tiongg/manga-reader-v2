@@ -1,13 +1,14 @@
-import FadeInView from '@/components/FadeInView';
-import { colors } from '@/config/theme';
-import { FromMain } from '@/types/navigation/nav-params';
-import { getMangaTitle } from '@/utils/get-manga-title';
-import { localeOrFirst } from '@/utils/locale-or-first';
 import { Box, Pressable, Text } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
 import { Chapter, Manga } from 'mangadex-client';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import FadeInView from '@/components/FadeInView';
+import { colors } from '@/config/theme';
+import { FromMain } from '@/types/navigation/nav-params';
+import { getMangaTitle } from '@/utils/get-manga-title';
+import { localeOrFirst } from '@/utils/locale-or-first';
 
 type TopOverlayProps = {
   manga: Manga;
@@ -34,7 +35,7 @@ function BottomOverlay({ currentPage, totalPages }: BottomOverlayProps) {
         backgroundColor: colors.bg2,
       }}
     >
-      <Text color={colors.words1} textAlign='center' paddingTop='$3'>
+      <Text color={colors.words1} textAlign="center" paddingTop="$3">
         {currentPage + 1} / {totalPages}
       </Text>
       <Box height={inset.bottom} />
@@ -67,7 +68,7 @@ function TopOverlay({ manga, chapter }: TopOverlayProps) {
           justifyContent: 'center',
           padding: 12,
         }}
-        tint='dark'
+        tint="dark"
         intensity={100}
       >
         <Box height={inset.top} />
@@ -76,25 +77,25 @@ function TopOverlay({ manga, chapter }: TopOverlayProps) {
             navigation.goBack();
           }}
         >
-          <Text color={colors.btn} fontWeight='400' fontSize='$md'>
+          <Text color={colors.btn} fontWeight="400" fontSize="$md">
             Close
           </Text>
         </Pressable>
       </BlurView>
       <BlurView
         style={{ height: 55, justifyContent: 'center', padding: 10 }}
-        tint='dark'
+        tint="dark"
         intensity={100}
       >
         <Text
           color={colors.words1}
-          fontSize='$sm'
-          lineHeight='$sm'
+          fontSize="$sm"
+          lineHeight="$sm"
           numberOfLines={1}
         >
           {mangaTitle}
         </Text>
-        <Text color={colors.words2} fontSize='$xs' numberOfLines={1}>
+        <Text color={colors.words2} fontSize="$xs" numberOfLines={1}>
           {chapterTitle}
         </Text>
       </BlurView>

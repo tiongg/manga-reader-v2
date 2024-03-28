@@ -1,7 +1,8 @@
-import FadeInView from '@/components/FadeInView';
 import { Box, Text } from '@gluestack-ui/themed';
-import { colors } from '@/config/theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import FadeInView from '@/components/FadeInView';
+import { colors } from '@/config/theme';
 
 export type MangaReaderBottomOverlayProps = {
   currentPage: number;
@@ -24,7 +25,7 @@ export default function MangaReaderBottomOverlay({
         backgroundColor: colors.bg2,
       }}
     >
-      <Text color={colors.words1} textAlign='center' paddingTop='$3'>
+      <Text color={colors.words1} textAlign="center" paddingTop="$3">
         {currentPage + 1} / {totalPages}
       </Text>
       <Box height={inset.bottom} />

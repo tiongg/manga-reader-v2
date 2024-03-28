@@ -1,3 +1,15 @@
+import { Pressable } from 'react-native';
+import {
+  Box,
+  HStack,
+  Image,
+  Spinner,
+  Text,
+  VStack,
+} from '@gluestack-ui/themed';
+import { useNavigation } from '@react-navigation/native';
+import { Manga } from 'mangadex-client';
+
 import { colors } from '@/config/theme';
 import { FromMain } from '@/types/navigation/nav-params';
 import { getCoverArtUrlFromManga } from '@/utils/cover-art-url';
@@ -5,17 +17,6 @@ import { getMangaTitle } from '@/utils/get-manga-title';
 import { getRelationship } from '@/utils/get-relationship';
 import { AuthorRelation } from '@/utils/missing-types';
 import { useGetAuthorMangas } from '@/utils/queries';
-import {
-  VStack,
-  Text,
-  Spinner,
-  Box,
-  Image,
-  HStack,
-} from '@gluestack-ui/themed';
-import { useNavigation } from '@react-navigation/native';
-import { Manga } from 'mangadex-client';
-import { Pressable } from 'react-native';
 
 export type MangaAuthorDetailProps = {
   manga: Manga;
@@ -32,7 +33,7 @@ function RelatedMangaItem({ manga }: { manga: Manga }) {
         navigation.push('MangaDetails', { mangaId: manga.id! });
       }}
     >
-      <Box width='$24'>
+      <Box width="$24">
         <Image
           source={imageUrl}
           alt={mangaTitle}
@@ -40,9 +41,9 @@ function RelatedMangaItem({ manga }: { manga: Manga }) {
             width: '100%',
             height: 140,
           }}
-          resizeMode='contain'
+          resizeMode="contain"
         />
-        <Text color={colors.words1} fontSize='$xs' numberOfLines={2}>
+        <Text color={colors.words1} fontSize="$xs" numberOfLines={2}>
           {mangaTitle}
         </Text>
       </Box>
@@ -75,15 +76,15 @@ export default function MangaAuthorDetail({ manga }: MangaAuthorDetailProps) {
 
   //Don't show current manga in the list
   const mangasToShow = authorMangas.filter(
-    authorManga => authorManga.id !== manga.id
+    (authorManga) => authorManga.id !== manga.id
   );
 
   return (
-    <VStack backgroundColor={colors.bg2} rowGap='$2' padding='$4'>
-      <Text color={colors.words1} fontWeight='600' fontSize='$lg'>
+    <VStack backgroundColor={colors.bg2} rowGap="$2" padding="$4">
+      <Text color={colors.words1} fontWeight="600" fontSize="$lg">
         More by author
       </Text>
-      <HStack gap='$2' flex={1}>
+      <HStack gap="$2" flex={1}>
         {mangasToShow.map((manga, i) => (
           <RelatedMangaItem key={i} manga={manga} />
         ))}

@@ -1,19 +1,19 @@
-import Providers from './Providers';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
-import FollowsPage from '@/features/FollowsPage';
-import UpdatesPage from '@/features/updates/UpdatesPage';
-
-import MangaDetailsPage from '@/features/manga-details/MangaDetailsPage';
-import { PageParams, ScreenParams } from '@/types/navigation/nav-params';
 import ChapterSelectPage from '@/features/chapter-select/ChapterSelectPage';
-import MangaReaderPage from '@/features/manga-reader/MangaReaderPage';
-import { useMangadexAuth } from '@/providers/MangadexAuth.provider';
+import FollowsPage from '@/features/FollowsPage';
 import LoggingInPage from '@/features/login/LoggingInPage';
 import LoginPage from '@/features/login/LoginPage';
+import MangaDetailsPage from '@/features/manga-details/MangaDetailsPage';
+import MangaReaderPage from '@/features/manga-reader/MangaReaderPage';
 import SettingsPage from '@/features/settings/SettingsPage';
+import UpdatesPage from '@/features/updates/UpdatesPage';
+
+import { useMangadexAuth } from '@/providers/MangadexAuth.provider';
+import { PageParams, ScreenParams } from '@/types/navigation/nav-params';
+import Providers from './Providers';
 
 const Tab = createBottomTabNavigator<PageParams>();
 const Stack = createNativeStackNavigator<ScreenParams>();
@@ -38,9 +38,9 @@ function TabPages() {
         shadowOffset: { width: 0, height: 0 },
       })}
     >
-      <Tab.Screen name='Updates' component={UpdatesPage} />
-      <Tab.Screen name='Favorites' component={FollowsPage} />
-      <Tab.Screen name='Settings' component={SettingsPage} />
+      <Tab.Screen name="Updates" component={UpdatesPage} />
+      <Tab.Screen name="Favorites" component={FollowsPage} />
+      <Tab.Screen name="Settings" component={SettingsPage} />
     </Tab.Navigator>
   );
 }
@@ -61,13 +61,13 @@ function StackPages() {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName='Main'
+      initialRouteName="Main"
     >
-      <Stack.Screen name='Main' component={TabPages} />
-      <Stack.Screen name='MangaDetails' component={MangaDetailsPage} />
-      <Stack.Screen name='ChapterSelect' component={ChapterSelectPage} />
+      <Stack.Screen name="Main" component={TabPages} />
+      <Stack.Screen name="MangaDetails" component={MangaDetailsPage} />
+      <Stack.Screen name="ChapterSelect" component={ChapterSelectPage} />
       <Stack.Screen
-        name='MangaReader'
+        name="MangaReader"
         component={MangaReaderPage}
         options={{
           gestureEnabled: false,

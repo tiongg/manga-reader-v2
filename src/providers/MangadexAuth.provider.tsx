@@ -1,4 +1,7 @@
+import { createContext, PropsWithChildren, useContext, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import * as fs from 'expo-file-system';
 import {
   AuthenticationService,
   LoginResponse,
@@ -7,9 +10,7 @@ import {
   User,
   UserService,
 } from 'mangadex-client';
-import { PropsWithChildren, createContext, useContext, useRef } from 'react';
-import * as fs from 'expo-file-system';
-import dayjs from 'dayjs';
+
 import { queryClient } from '@/config/query-client';
 
 export type UsernamePassword = {
@@ -117,8 +118,8 @@ export function MangadexAuthProvider({ children }: PropsWithChildren) {
     queryKey: ['user'],
     queryFn: () =>
       getSessionFromUsernamePassword(loginData.current)
-        .then(res => res ?? null)
-        .catch(ex => ex ?? null),
+        .then((res) => res ?? null)
+        .catch((ex) => ex ?? null),
     refetchInterval: 6 * 60 * 1000, //6 minutes
   });
 

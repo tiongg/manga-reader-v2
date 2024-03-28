@@ -1,4 +1,5 @@
 import { Manga } from 'mangadex-client';
+
 import { getRelationship } from './get-relationship';
 import { CoverArtRelation } from './missing-types';
 

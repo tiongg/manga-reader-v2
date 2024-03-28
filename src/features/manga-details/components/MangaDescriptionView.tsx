@@ -1,9 +1,10 @@
+import { HStack, Text, VStack } from '@gluestack-ui/themed';
+import { Manga } from 'mangadex-client';
+
 import TagDisplay from '@/components/TagDisplay';
 import { colors } from '@/config/theme';
 import { localeOrFirst } from '@/utils/locale-or-first';
 import { TagRelation } from '@/utils/missing-types';
-import { VStack, Text, HStack } from '@gluestack-ui/themed';
-import { Manga } from 'mangadex-client';
 
 export type MangaDescriptionViewProps = {
   manga: Manga;
@@ -13,7 +14,7 @@ export default function MangaDescriptionView({
   manga,
 }: MangaDescriptionViewProps) {
   const tags = manga.attributes?.tags?.filter(
-    x => x.type === 'tag'
+    (x) => x.type === 'tag'
   ) as TagRelation[];
   const descriptions = manga.attributes?.description ?? {
     en: 'No description',
@@ -21,22 +22,22 @@ export default function MangaDescriptionView({
   const localizedDescription = localeOrFirst(descriptions);
 
   return (
-    <VStack backgroundColor={colors.bg2} rowGap='$6' padding='$4'>
-      <VStack rowGap='$2'>
-        <Text color={colors.words1} fontWeight='600' fontSize='$lg'>
+    <VStack backgroundColor={colors.bg2} rowGap="$6" padding="$4">
+      <VStack rowGap="$2">
+        <Text color={colors.words1} fontWeight="600" fontSize="$lg">
           Genres
         </Text>
-        <HStack flexWrap='wrap' gap='$1.5'>
+        <HStack flexWrap="wrap" gap="$1.5">
           {tags.map((x, i) => (
             <TagDisplay tag={x} key={`tags-${i}`} />
           ))}
         </HStack>
       </VStack>
-      <VStack rowGap='$2'>
-        <Text color={colors.words1} fontWeight='600' fontSize='$lg'>
+      <VStack rowGap="$2">
+        <Text color={colors.words1} fontWeight="600" fontSize="$lg">
           Description
         </Text>
-        <Text color={colors.words2} lineHeight='$md'>
+        <Text color={colors.words2} lineHeight="$md">
           {localizedDescription}
         </Text>
       </VStack>

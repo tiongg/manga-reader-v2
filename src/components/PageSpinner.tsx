@@ -1,6 +1,7 @@
 import { Spinner, View } from '@gluestack-ui/themed';
-import TopInset from './TopInset';
+
 import { colors } from '@/config/theme';
+import TopInset from './TopInset';
 
 export type PageSpinnerProps = {
   insetTop?: boolean;
@@ -15,8 +16,8 @@ export default function PageSpinner({
     <>
       {insetTop && <TopInset />}
       <View
-        display='flex'
-        justifyContent='center'
+        display="flex"
+        justifyContent="center"
         flex={1}
         backgroundColor={bgColor}
       >

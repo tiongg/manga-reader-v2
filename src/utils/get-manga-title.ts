@@ -1,4 +1,5 @@
 import { Manga } from 'mangadex-client';
+
 import { localeOrFirst } from './locale-or-first';
 
 /**

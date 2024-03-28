@@ -29,7 +29,7 @@ export function getRelationship<T extends Relationship>(
 
 export function getRelationship<
   T extends Relationship,
-  TItem extends { relationships: Relationship[] }
+  TItem extends { relationships: Relationship[] },
 >(item: TItem, type: string) {
-  return item.relationships.find(r => r.type === type) as T;
+  return item.relationships.find((r) => r.type === type) as T;
 }

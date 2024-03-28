@@ -1,17 +1,18 @@
-import { ScreenProps } from '@/types/navigation/nav-params';
-import { ScrollView, VStack, View, Text } from '@gluestack-ui/themed';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React from 'react';
-import MangaHeaderBar from './components/MangaHeaderBar';
-import MangaDetailView from './components/MangaDetailView';
-import MangaChaptersView from './components/MangaChaptersView';
-import { colors } from '@/config/theme';
-import MangaDescriptionView from './components/MangaDescriptionView';
-import { useGetMangaAndChapters, useGetReadMarkers } from '@/utils/queries';
-import TopInset from '@/components/TopInset';
+import { ScrollView, Text, View, VStack } from '@gluestack-ui/themed';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import PageSpinner from '@/components/PageSpinner';
+import TopInset from '@/components/TopInset';
+import { colors } from '@/config/theme';
+import { ScreenProps } from '@/types/navigation/nav-params';
 import { getLastReadChapter } from '@/utils/get-last-read-chapter';
+import { useGetMangaAndChapters, useGetReadMarkers } from '@/utils/queries';
 import MangaAuthorDetail from './components/MangaAuthorDetail';
+import MangaChaptersView from './components/MangaChaptersView';
+import MangaDescriptionView from './components/MangaDescriptionView';
+import MangaDetailView from './components/MangaDetailView';
+import MangaHeaderBar from './components/MangaHeaderBar';
 
 export type MangaDetailsPageProps = { mangaId: string };
 
@@ -47,7 +48,7 @@ export default function MangaDetailsPage({
       <View paddingBottom={inset.bottom} flex={1} backgroundColor={colors.bg2}>
         <MangaHeaderBar manga={manga} />
         <ScrollView>
-          <VStack flex={1} backgroundColor={colors.bg1} gap='$4'>
+          <VStack flex={1} backgroundColor={colors.bg1} gap="$4">
             <MangaDetailView
               manga={manga}
               chapters={chapters}

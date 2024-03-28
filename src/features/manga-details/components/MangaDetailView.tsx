@@ -1,23 +1,24 @@
+import React from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import {
+  Box,
+  Image,
+  Pressable,
+  Text,
+  View,
+  VStack,
+} from '@gluestack-ui/themed';
+import { useNavigation } from '@react-navigation/native';
+import { capitalize } from 'lodash';
+import { Chapter, Manga } from 'mangadex-client';
+import { match } from 'ts-pattern';
+
+import { colors } from '@/config/theme';
+import { FromMain } from '@/types/navigation/nav-params';
 import { getCoverArtUrlFromManga } from '@/utils/cover-art-url';
 import { getMangaTitle } from '@/utils/get-manga-title';
 import { getRelationship } from '@/utils/get-relationship';
 import { AuthorRelation } from '@/utils/missing-types';
-import {
-  VStack,
-  Box,
-  Image,
-  View,
-  Text,
-  Pressable,
-} from '@gluestack-ui/themed';
-import { capitalize } from 'lodash';
-import { Ionicons } from '@expo/vector-icons';
-import { Chapter, Manga } from 'mangadex-client';
-import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { FromMain } from '@/types/navigation/nav-params';
-import { colors } from '@/config/theme';
-import { match } from 'ts-pattern';
 
 export type MangaDetailViewProps = {
   manga: Manga;
@@ -39,42 +40,44 @@ export default function MangaDetailView({
   const numChapters = chapters.length;
 
   //Resume button stuff
-  const indexOfLastRead = chapters.findIndex(x => x.id === lastReadChapter?.id);
+  const indexOfLastRead = chapters.findIndex(
+    (x) => x.id === lastReadChapter?.id
+  );
   const nextChapterIndex = match(indexOfLastRead - 1)
     //No last read OR last read is the last chapter
     //Start from the beginning
     .when(
-      x => x < 0,
+      (x) => x < 0,
       () => numChapters - 1
     )
     //Ngl this shouldn't happen but just in case
     .when(
-      x => x >= numChapters,
+      (x) => x >= numChapters,
       () => numChapters - 1
     )
-    .otherwise(x => x);
+    .otherwise((x) => x);
   const nextChapterId = chapters[nextChapterIndex]?.id;
 
   return (
-    <VStack rowGap='$3' backgroundColor={colors.bg2}>
-      <Box width='$full' marginTop='$3' display='flex' alignItems='center'>
+    <VStack rowGap="$3" backgroundColor={colors.bg2}>
+      <Box width="$full" marginTop="$3" display="flex" alignItems="center">
         <Image
           style={{ height: 180, width: '100%' }}
-          resizeMode='contain'
+          resizeMode="contain"
           source={imageUrl}
-          alt='cover art'
+          alt="cover art"
         />
       </Box>
       <Text
-        textAlign='center'
-        fontSize='$xl'
-        fontWeight='bold'
-        marginHorizontal='$3'
+        textAlign="center"
+        fontSize="$xl"
+        fontWeight="bold"
+        marginHorizontal="$3"
         color={colors.words1}
       >
         {mangaTitle}
       </Text>
-      <Text textAlign='center' fontSize='$sm' color={colors.words2}>
+      <Text textAlign="center" fontSize="$sm" color={colors.words2}>
         {author.attributes.name} • {capitalize(status)}
       </Text>
       <View
@@ -98,11 +101,11 @@ export default function MangaDetailView({
           <Ionicons
             style={{ textAlign: 'center' }}
             color={colors.btn}
-            name='play-outline'
+            name="play-outline"
             size={30}
             disabled={!nextChapterId}
           />
-          <Text textAlign='center'>{lastReadChapter ? 'Resume' : 'Read'}</Text>
+          <Text textAlign="center">{lastReadChapter ? 'Resume' : 'Read'}</Text>
         </Pressable>
         <Pressable
           onPress={() => {
@@ -112,19 +115,19 @@ export default function MangaDetailView({
           <Ionicons
             style={{ textAlign: 'center' }}
             color={colors.btn}
-            name='list-outline'
+            name="list-outline"
             size={30}
           />
-          <Text textAlign='center'>{numChapters} Chapters</Text>
+          <Text textAlign="center">{numChapters} Chapters</Text>
         </Pressable>
         <Pressable onPress={() => {}}>
           <Ionicons
             style={{ textAlign: 'center' }}
             color={colors.btn}
-            name='heart'
+            name="heart"
             size={30}
           />
-          <Text textAlign='center'>Following</Text>
+          <Text textAlign="center">Following</Text>
         </Pressable>
       </View>
     </VStack>
