@@ -8,6 +8,7 @@ import {
   MangaService,
   ReadMarkerService,
 } from 'mangadex-client';
+import { getRelationship } from './get-relationship';
 
 //Pagination limit
 const LIMIT = 32;
@@ -38,7 +39,12 @@ export async function getChapters(mangaId: string, offset: number = 0) {
   return mangaChapters.data;
 }
 
-export async function getFeed(offset: number = 0) {
+/**
+ * Gets feed data. Replace manga relationship with full manga data, rather than a relationship
+ * @param offset - Offset for the feed
+ * @returns Chapter feed with manga data loaded
+ */
+export async function getFeedWithManga(offset: number = 0) {
   const feed = await FeedService.getUserFollowsMangaFeed({
     limit: LIMIT,
     offset: offset,
@@ -48,17 +54,35 @@ export async function getFeed(offset: number = 0) {
     },
     includesArray: ['manga'],
   });
-  return feed.data;
+  const feedIds = (feed.data ?? []).map(
+    chapter => getRelationship(chapter, 'manga').id!
+  );
+  const mangaData = await getMangas(feedIds);
+  const mangaMap = new Map(
+    (mangaData.data ?? []).map(manga => [manga.id!, manga])
+  );
+  //Manually replace the manga relationship with the full manga data
+  for (const feedData of feed.data ?? []) {
+    const mangaId = getRelationship(feedData, 'manga').id!;
+    const indexOfRelationship = (feedData.relationships ?? []).findIndex(
+      r => r.type === 'manga'
+    );
+    if (indexOfRelationship === -1) {
+      continue;
+    }
+    feedData.relationships![indexOfRelationship] = mangaMap.get(mangaId)!;
+  }
+
+  return feed;
 }
 
 export async function getMangas(ids: string[]) {
   const manga = await MangaService.getSearchManga({
     limit: LIMIT,
-    offset: 0,
     idsArray: ids,
     includesArray: ['cover_art'],
   });
-  return manga.data;
+  return manga;
 }
 
 export async function getReadChapterIds(mangaId: string) {

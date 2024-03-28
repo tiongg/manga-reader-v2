@@ -1,13 +1,14 @@
 import { useMangadexAuth } from '@/providers/MangadexAuth.provider';
-import { Box, ScrollView, VStack, RefreshControl } from '@gluestack-ui/themed';
-import { useQuery } from '@tanstack/react-query';
-import { Manga, MangaRelation } from 'mangadex-client';
+import { VStack, RefreshControl } from '@gluestack-ui/themed';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { Manga } from 'mangadex-client';
 import _ from 'lodash';
 import { config } from '@gluestack-ui/config';
-import MangaUpdateItem from './MangaUpdateItem';
-import { getFeed, getMangas } from '@/utils/queries';
+import { getFeedWithManga } from '@/utils/queries';
 import { getRelationship } from '@/utils/get-relationship';
 import PageSpinner from '@/components/PageSpinner';
+import { FlatList } from 'react-native';
+import MangaUpdateMemo from './MangaUpdateItem';
 
 export default function UpdatesPage() {
   const { user } = useMangadexAuth();
@@ -16,61 +17,50 @@ export default function UpdatesPage() {
     isLoading: isLoadingFeed,
     isRefetching: isRefetchingFeed,
     refetch: refetchFeed,
-  } = useQuery({
+    hasNextPage,
+    fetchNextPage: fetchNextChapters,
+  } = useInfiniteQuery({
     queryKey: ['follows'],
-    queryFn: () => getFeed(),
+    queryFn: ({ pageParam }) => getFeedWithManga(pageParam),
     enabled: !!user,
+    initialPageParam: 0,
+    getNextPageParam: lastPage => lastPage.offset! + lastPage.limit!,
   });
 
-  const feedIds = (feed ?? [])
-    .map(chapter => getRelationship<MangaRelation>(chapter, 'manga').id)
-    .filter((x): x is string => !!x);
+  const feedItems = (feed?.pages ?? []).map(page => page.data ?? []).flat();
 
-  const { data: mangaData, isLoading: isLoadingManga } = useQuery({
-    queryKey: ['manga', feedIds],
-    queryFn: () => getMangas(feedIds),
-    enabled: !!feedIds.length,
-  });
-
-  //Map mangaid to mangadata
-  const mangaMap = new Map<string, Manga>(
-    (mangaData ?? []).map(manga => [manga.id!, manga])
-  );
+  if (isLoadingFeed) {
+    return <PageSpinner />;
+  }
 
   return (
     <VStack height='100%'>
-      <Box flex={1}>
-        {isLoadingFeed || isLoadingManga ? (
-          <PageSpinner />
-        ) : (
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={isRefetchingFeed}
-                onRefresh={() => {
-                  refetchFeed();
-                }}
-                tintColor={config.tokens.colors.light200}
-              />
-            }
-          >
-            <VStack rowGap='$2' paddingVertical='$2'>
-              {feed?.map(chapter => {
-                const mangaData = chapter.relationships?.find(
-                  r => r.type === 'manga'
-                );
-                return (
-                  <MangaUpdateItem
-                    key={chapter.id}
-                    chapter={chapter}
-                    manga={mangaMap.get(mangaData!.id!)!}
-                  />
-                );
-              })}
-            </VStack>
-          </ScrollView>
-        )}
-      </Box>
+      <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefetchingFeed}
+            onRefresh={() => {
+              refetchFeed();
+            }}
+            tintColor={config.tokens.colors.light200}
+          />
+        }
+        contentContainerStyle={{
+          rowGap: config.tokens.space['2'],
+          paddingVertical: config.tokens.space['2'],
+        }}
+        data={feedItems}
+        renderItem={({ item }) => {
+          const mangaData = getRelationship<Manga>(item, 'manga');
+          return (
+            <MangaUpdateMemo key={item.id} chapter={item} manga={mangaData!} />
+          );
+        }}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => {
+          fetchNextChapters();
+        }}
+      />
     </VStack>
   );
 }

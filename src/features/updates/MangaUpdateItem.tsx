@@ -6,8 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 import { colors } from '@/config/theme';
 import { getRelationship } from '@/utils/get-relationship';
 import { CoverArtRelation } from '@/utils/missing-types';
+import { memo } from 'react';
+import { getMangaTitle } from '@/utils/get-manga-title';
 
-export default function MangaUpdateItem({
+export function MangaUpdateItem({
   chapter,
   manga,
 }: {
@@ -16,9 +18,8 @@ export default function MangaUpdateItem({
 }) {
   const coverArtFileName = getRelationship<CoverArtRelation>(manga, 'cover_art')
     .attributes.fileName!;
-  const titles = manga.attributes?.title!;
   const coverArtUrl = getCoverArtUrl(manga.id!, coverArtFileName);
-  const mangaTitle = titles['en'] ?? Object.values(titles)[0];
+  const mangaTitle = getMangaTitle(manga);
   const chapterAttributes = chapter.attributes!;
 
   const navigate = useNavigation<FromMain>();
@@ -57,3 +58,6 @@ export default function MangaUpdateItem({
     </Pressable>
   );
 }
+
+const MangaUpdateMemo = memo(MangaUpdateItem);
+export default MangaUpdateMemo;
