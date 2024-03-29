@@ -77,7 +77,7 @@ export default function MangaReaderPage({
   if (!manga || !pageUrls || !chapters) {
     return (
       <Box>
-        <Text>Something went wrong!</Text>
+        <Text>Something is null...</Text>
       </Box>
     );
   }
@@ -141,7 +141,7 @@ export default function MangaReaderPage({
             return;
           }
 
-          startAtPage.current = 1;
+          startAtPage.current = 0;
           navigation.setParams({
             chapterId: nextChapter?.id!,
           });
