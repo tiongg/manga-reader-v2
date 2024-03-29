@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import ChapterSelectPage from '@/features/chapter-select/ChapterSelectPage';
-import FollowsPage from '@/features/FollowsPage';
+import FollowsPage from '@/features/follows/FollowsPage';
 import LoggingInPage from '@/features/login/LoggingInPage';
 import LoginPage from '@/features/login/LoginPage';
 import MangaDetailsPage from '@/features/manga-details/MangaDetailsPage';

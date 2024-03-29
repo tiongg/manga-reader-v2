@@ -26,30 +26,30 @@ export function MangaUpdateItem({
       onPress={() => {
         navigate.navigate('MangaDetails', { mangaId: manga.id! });
       }}
+      paddingHorizontal="$2"
+      flex={1}
     >
-      <Box paddingHorizontal="$2" flex={1}>
-        <Box gap="$2" display="flex" flexDirection="row">
-          <Image
-            source={coverArtUrl}
-            alt={`${mangaTitle} cover`}
-            resizeMode="cover"
-            width={70}
-            height={100}
-          />
-          <Box flex={1}>
-            <Text
-              fontWeight="$bold"
-              color={colors.words1}
-              numberOfLines={2}
-              ellipsizeMode="tail"
-            >
-              {mangaTitle}
-            </Text>
-            <Text numberOfLines={1}>
-              Chapter {chapterAttributes.chapter}
-              {chapterAttributes.title ? ` - ${chapterAttributes.title}` : ''}
-            </Text>
-          </Box>
+      <Box gap="$2" display="flex" flexDirection="row">
+        <Image
+          source={coverArtUrl}
+          alt={`${mangaTitle} cover`}
+          resizeMode="cover"
+          width={70}
+          height={100}
+        />
+        <Box flex={1}>
+          <Text
+            fontWeight="$bold"
+            color={colors.words1}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {mangaTitle}
+          </Text>
+          <Text numberOfLines={1}>
+            Chapter {chapterAttributes.chapter}
+            {chapterAttributes.title ? ` - ${chapterAttributes.title}` : ''}
+          </Text>
         </Box>
       </Box>
     </Pressable>

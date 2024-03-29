@@ -14,7 +14,7 @@ import { queryClient } from '@/config/query-client';
 import { getRelationship } from './get-relationship';
 
 //Pagination limit
-const LIMIT = 32;
+export const LIMIT = 32;
 
 //Stale times
 const ONE_MINUTE = 1000 * 60;
@@ -79,11 +79,13 @@ export async function getFeedWithManga(offset: number = 0) {
   return feed;
 }
 
+//Cant offset when querying by id,
+//Since the id array itself is too large
 export async function getMangas(ids: string[]) {
   const manga = await MangaService.getSearchManga({
     limit: LIMIT,
     idsArray: ids,
-    includesArray: ['cover_art'],
+    includesArray: ['cover_art', 'author'],
   });
   return manga;
 }
@@ -166,18 +168,41 @@ export async function getMangaFollowStatus(mangaId: string) {
   }
 }
 
-export async function followManga(mangaId: string) {
-  const res = await MangaService.postMangaIdFollow({
-    id: mangaId,
+export async function getAllFollows() {
+  const status = await MangaService.getMangaStatus({
+    status: 'reading',
   });
-  return res.result === 'ok';
+  return status.statuses;
+}
+
+export async function followManga(mangaId: string) {
+  const res = await Promise.all([
+    MangaService.postMangaIdFollow({
+      id: mangaId,
+    }),
+    MangaService.postMangaIdStatus({
+      id: mangaId,
+      requestBody: {
+        status: 'reading',
+      },
+    }),
+  ]);
+  return res.every((res) => res.result === 'ok');
 }
 
 export async function unfollowManga(mangaId: string) {
-  const res = await MangaService.deleteMangaIdFollow({
-    id: mangaId,
-  });
-  return res.result === 'ok';
+  const res = await Promise.all([
+    MangaService.deleteMangaIdFollow({
+      id: mangaId,
+    }),
+    MangaService.postMangaIdStatus({
+      id: mangaId,
+      requestBody: {
+        status: null,
+      },
+    }),
+  ]);
+  return res.every((res) => res.result === 'ok');
 }
 
 //Hooks
@@ -224,6 +249,14 @@ export function useGetAuthorMangas(authorId: string) {
   return useQuery({
     queryKey: ['author-mangas', authorId],
     queryFn: () => getAuthorMangas(authorId),
+    staleTime: ONE_HOUR,
+  });
+}
+
+export function useGetAllFollows() {
+  return useQuery({
+    queryKey: ['all-follows'],
+    queryFn: getAllFollows,
     staleTime: ONE_HOUR,
   });
 }

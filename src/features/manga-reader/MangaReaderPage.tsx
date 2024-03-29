@@ -1,15 +1,6 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Dimensions, FlatList } from 'react-native';
-import {
-  Box,
-  Image,
-  Pressable,
-  Spinner,
-  Text,
-  Toast,
-  ToastTitle,
-  useToast,
-} from '@gluestack-ui/themed';
+import { Box, Text, Toast, ToastTitle, useToast } from '@gluestack-ui/themed';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { match } from 'ts-pattern';

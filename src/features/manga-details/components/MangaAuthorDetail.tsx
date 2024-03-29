@@ -1,8 +1,8 @@
-import { Pressable } from 'react-native';
 import {
   Box,
   HStack,
   Image,
+  Pressable,
   ScrollView,
   Spinner,
   Text,
@@ -30,24 +30,23 @@ function RelatedMangaItem({ manga }: { manga: Manga }) {
 
   return (
     <Pressable
+      width="$24"
       onPress={() => {
         navigation.push('MangaDetails', { mangaId: manga.id! });
       }}
     >
-      <Box width="$24">
-        <Image
-          source={imageUrl}
-          alt={mangaTitle}
-          style={{
-            width: '100%',
-            height: 140,
-          }}
-          resizeMode="contain"
-        />
-        <Text color={colors.words1} fontSize="$xs" numberOfLines={2}>
-          {mangaTitle}
-        </Text>
-      </Box>
+      <Image
+        source={imageUrl}
+        alt={mangaTitle}
+        style={{
+          width: '100%',
+          height: 140,
+        }}
+        resizeMode="contain"
+      />
+      <Text color={colors.words1} fontSize="$xs" numberOfLines={2}>
+        {mangaTitle}
+      </Text>
     </Pressable>
   );
 }

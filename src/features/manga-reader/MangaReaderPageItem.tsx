@@ -25,7 +25,7 @@ export function PageItem({ url, index, onPress }: PageProps) {
           position="absolute"
           justifyContent="center"
         >
-          <Spinner size="large" />
+          <Spinner />
         </Box>
       )}
       <Image

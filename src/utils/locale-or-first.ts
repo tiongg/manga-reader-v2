@@ -8,5 +8,5 @@ import { LOCALE_LANGUAGE } from './constants';
  * @returns Localized string
  */
 export function localeOrFirst(localizedString: LocalizedString) {
-  return localizedString[LOCALE_LANGUAGE] ?? Object.keys(localizedString)[0];
+  return localizedString[LOCALE_LANGUAGE] ?? Object.values(localizedString)[0];
 }

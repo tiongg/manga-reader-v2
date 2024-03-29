@@ -21,7 +21,7 @@ export default function UpdatesPage() {
     hasNextPage,
     fetchNextPage: fetchNextChapters,
   } = useInfiniteQuery({
-    queryKey: ['follows'],
+    queryKey: ['follows-feed'],
     queryFn: ({ pageParam }) => getFeedWithManga(pageParam),
     enabled: !!user,
     initialPageParam: 0,
