@@ -25,7 +25,8 @@ export function FollowMangaItem({ manga }: FollowMangaItemProps) {
   return (
     <Pressable
       height="$48"
-      flex={1}
+      //4 Columns
+      flex={1 / 4}
       onPress={() => {
         navigation.navigate('MangaDetails', { mangaId: manga.id! });
       }}

@@ -56,7 +56,7 @@ export default function FollowsPage() {
   }
 
   return (
-    <View>
+    <View flex={1}>
       <FlatList
         refreshControl={
           <RefreshControl
@@ -64,7 +64,7 @@ export default function FollowsPage() {
             onRefresh={() => {
               refetchManga();
             }}
-            tintColor={config.tokens.colors.light200}
+            tintColor="$light200"
           />
         }
         ListHeaderComponent={

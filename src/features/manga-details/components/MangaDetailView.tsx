@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Box,
+  HStack,
   Image,
   Pressable,
   Text,
@@ -9,6 +10,7 @@ import {
   VStack,
 } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
+import * as Haptics from 'expo-haptics';
 import { capitalize } from 'lodash';
 import { Chapter, Manga } from 'mangadex-client';
 import { match } from 'ts-pattern';
@@ -92,16 +94,14 @@ export default function MangaDetailView({
       <Text textAlign="center" fontSize="$sm" color={colors.words2}>
         {author.attributes.name} • {capitalize(status)}
       </Text>
-      <View
-        style={{
-          alignItems: 'center',
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-          paddingBottom: 15,
-        }}
+      <HStack
+        alignItems="center"
+        flex={1}
+        paddingBottom="$4"
+        paddingHorizontal="$4"
       >
         <Pressable
+          flex={1}
           onPress={() => {
             if (!nextChapterId) return;
             navigation.navigate('MangaReader', {
@@ -120,6 +120,7 @@ export default function MangaDetailView({
           <Text textAlign="center">{lastReadChapter ? 'Resume' : 'Read'}</Text>
         </Pressable>
         <Pressable
+          flex={1}
           onPress={() => {
             navigation.navigate('ChapterSelect', { mangaId: manga.id! });
           }}
@@ -133,6 +134,7 @@ export default function MangaDetailView({
           <Text textAlign="center">{numChapters} Chapters</Text>
         </Pressable>
         <Pressable
+          flex={1}
           onPress={() => {
             if (isFollowing) {
               unfollowManga();
@@ -140,6 +142,7 @@ export default function MangaDetailView({
               followManga();
             }
             toggleFollowing();
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           }}
           disabled={isMutatingFollow}
         >
@@ -151,7 +154,7 @@ export default function MangaDetailView({
           />
           <Text textAlign="center">{isFollowing ? 'Following' : 'Follow'}</Text>
         </Pressable>
-      </View>
+      </HStack>
     </VStack>
   );
 }

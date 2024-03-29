@@ -153,7 +153,7 @@ export default function MangaReaderPage({
               </Toast>
             ),
           });
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         }}
         onTouchMove={hideOverlay}
         getItemLayout={(data, index) => ({

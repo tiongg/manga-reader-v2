@@ -43,7 +43,7 @@ export default function UpdatesPage() {
             onRefresh={() => {
               refetchFeed();
             }}
-            tintColor={config.tokens.colors.light200}
+            tintColor="$light200"
           />
         }
         contentContainerStyle={{
