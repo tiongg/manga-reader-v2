@@ -5,10 +5,8 @@ import { Chapter, Manga } from 'mangadex-client';
 
 import { colors } from '@/config/theme';
 import { FromMain } from '@/types/navigation/nav-params';
-import { getCoverArtUrl } from '@/utils/cover-art-url';
+import { getCoverArtUrlFromManga } from '@/utils/cover-art-url';
 import { getMangaTitle } from '@/utils/get-manga-title';
-import { getRelationship } from '@/utils/get-relationship';
-import { CoverArtRelation } from '@/utils/missing-types';
 
 export function MangaUpdateItem({
   chapter,
@@ -17,9 +15,7 @@ export function MangaUpdateItem({
   chapter: Chapter;
   manga: Manga;
 }) {
-  const coverArtFileName = getRelationship<CoverArtRelation>(manga, 'cover_art')
-    .attributes.fileName!;
-  const coverArtUrl = getCoverArtUrl(manga.id!, coverArtFileName);
+  const coverArtUrl = getCoverArtUrlFromManga(manga);
   const mangaTitle = getMangaTitle(manga);
   const chapterAttributes = chapter.attributes!;
 

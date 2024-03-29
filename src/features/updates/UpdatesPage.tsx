@@ -1,6 +1,6 @@
 import { FlatList } from 'react-native';
 import { config } from '@gluestack-ui/config';
-import { RefreshControl, VStack } from '@gluestack-ui/themed';
+import { Box, RefreshControl, VStack } from '@gluestack-ui/themed';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import _ from 'lodash';
 import { Manga } from 'mangadex-client';
@@ -53,8 +53,10 @@ export default function UpdatesPage() {
         data={feedItems}
         renderItem={({ item }) => {
           const mangaData = getRelationship<Manga>(item, 'manga');
+          if (!mangaData) return <Box height="$4" bgColor="red" />;
+
           return (
-            <MangaUpdateMemo key={item.id} chapter={item} manga={mangaData!} />
+            <MangaUpdateMemo key={item.id} chapter={item} manga={mangaData} />
           );
         }}
         onEndReachedThreshold={0.5}

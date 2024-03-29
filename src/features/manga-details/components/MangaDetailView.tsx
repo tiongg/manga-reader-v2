@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Box,
@@ -19,25 +19,37 @@ import { getCoverArtUrlFromManga } from '@/utils/cover-art-url';
 import { getMangaTitle } from '@/utils/get-manga-title';
 import { getRelationship } from '@/utils/get-relationship';
 import { AuthorRelation } from '@/utils/missing-types';
+import { useFollowManga, useUnfollowManga } from '@/utils/queries';
+import { useBoolean } from '@/utils/use-boolean';
 
 export type MangaDetailViewProps = {
   manga: Manga;
   chapters: Chapter[];
   lastReadChapter?: Chapter;
+  isFollowing: boolean;
 };
 
 export default function MangaDetailView({
   manga,
   chapters,
   lastReadChapter,
+  isFollowing: isFollowingInital,
 }: MangaDetailViewProps) {
   const navigation = useNavigation<FromMain>();
+
+  const { value: isFollowing, toggle: toggleFollowing } =
+    useBoolean(isFollowingInital);
+  const { mutate: followManga, isPending: isFollowingMutation } =
+    useFollowManga(manga.id!);
+  const { mutate: unfollowManga, isPending: isUnfollowingMutation } =
+    useUnfollowManga(manga.id!);
 
   const imageUrl = getCoverArtUrlFromManga(manga);
   const status = manga.attributes?.status;
   const mangaTitle = getMangaTitle(manga);
   const author = getRelationship<AuthorRelation>(manga, 'author');
   const numChapters = chapters.length;
+  const isMutatingFollow = isFollowingMutation || isUnfollowingMutation;
 
   //Resume button stuff
   const indexOfLastRead = chapters.findIndex(
@@ -120,14 +132,24 @@ export default function MangaDetailView({
           />
           <Text textAlign="center">{numChapters} Chapters</Text>
         </Pressable>
-        <Pressable onPress={() => {}}>
+        <Pressable
+          onPress={() => {
+            if (isFollowing) {
+              unfollowManga();
+            } else {
+              followManga();
+            }
+            toggleFollowing();
+          }}
+          disabled={isMutatingFollow}
+        >
           <Ionicons
             style={{ textAlign: 'center' }}
             color={colors.btn}
-            name="heart"
+            name={isFollowing ? 'heart' : 'heart-outline'}
             size={30}
           />
-          <Text textAlign="center">Following</Text>
+          <Text textAlign="center">{isFollowing ? 'Following' : 'Follow'}</Text>
         </Pressable>
       </View>
     </VStack>

@@ -1,11 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import _ from 'lodash';
 import {
   AtHomeService,
   AuthorService,
   FeedService,
+  FollowsService,
   MangaService,
   ReadMarkerService,
+  UserService,
 } from 'mangadex-client';
 
 import { queryClient } from '@/config/query-client';
@@ -146,6 +148,31 @@ export async function getAuthorMangas(authorId: string) {
   return mangas.data;
 }
 
+export async function getMangaFollowStatus(mangaId: string) {
+  try {
+    const status = await FollowsService.getUserFollowsMangaId({
+      id: mangaId,
+    });
+    return status.result === 'ok';
+  } catch (ex) {
+    return false;
+  }
+}
+
+export async function followManga(mangaId: string) {
+  const res = await MangaService.postMangaIdFollow({
+    id: mangaId,
+  });
+  return res.result === 'ok';
+}
+
+export async function unfollowManga(mangaId: string) {
+  const res = await MangaService.deleteMangaIdFollow({
+    id: mangaId,
+  });
+  return res.result === 'ok';
+}
+
 //Hooks
 export function useGetMangaAndChapters(mangaId: string) {
   return { manga: useGetManga(mangaId), chapters: useGetChapters(mangaId) };
@@ -191,5 +218,28 @@ export function useGetAuthorMangas(authorId: string) {
     queryKey: ['author-mangas', authorId],
     queryFn: () => getAuthorMangas(authorId),
     staleTime: ONE_HOUR,
+  });
+}
+
+export function useGetFollowStatus(mangaId: string) {
+  return useQuery({
+    queryKey: ['follow-status', mangaId],
+    queryFn: () => getMangaFollowStatus(mangaId),
+  });
+}
+
+export function useFollowManga(mangaId: string) {
+  return useMutation({
+    mutationFn: () => followManga(mangaId),
+    onSettled: () =>
+      queryClient.invalidateQueries({ queryKey: ['follow-status', mangaId] }),
+  });
+}
+
+export function useUnfollowManga(mangaId: string) {
+  return useMutation({
+    mutationFn: () => unfollowManga(mangaId),
+    onSettled: () =>
+      queryClient.invalidateQueries({ queryKey: ['follow-status', mangaId] }),
   });
 }

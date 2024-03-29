@@ -7,7 +7,11 @@ import TopInset from '@/components/TopInset';
 import { colors } from '@/config/theme';
 import { ScreenProps } from '@/types/navigation/nav-params';
 import { getLastReadChapter } from '@/utils/get-last-read-chapter';
-import { useGetMangaAndChapters, useGetReadMarkers } from '@/utils/queries';
+import {
+  useGetFollowStatus,
+  useGetMangaAndChapters,
+  useGetReadMarkers,
+} from '@/utils/queries';
 import MangaAuthorDetail from './components/MangaAuthorDetail';
 import MangaChaptersView from './components/MangaChaptersView';
 import MangaDescriptionView from './components/MangaDescriptionView';
@@ -25,18 +29,26 @@ export default function MangaDetailsPage({
   const inset = useSafeAreaInsets();
 
   const {
-    manga: { data: manga, isLoading: isLoadingManga },
-    chapters: { data: chapters, isLoading: isLoadingChapters },
+    manga: { data: manga, isPending: isPendingManga },
+    chapters: { data: chapters, isPending: isPendingChapters },
   } = useGetMangaAndChapters(mangaId);
 
-  const { data: readChapters, isLoading: isLoadingReadMarkers } =
+  const { data: readChapters, isPending: isPendingReadMarkers } =
     useGetReadMarkers(mangaId);
 
-  if (isLoadingChapters || isLoadingManga || isLoadingReadMarkers) {
+  const { data: followStatus, isPending: isPendingFollowStatus } =
+    useGetFollowStatus(mangaId);
+
+  if (
+    isPendingChapters ||
+    isPendingManga ||
+    isPendingReadMarkers ||
+    isPendingFollowStatus
+  ) {
     return <PageSpinner insetTop />;
   }
 
-  if (!manga || !chapters || !readChapters) {
+  if (!manga || !chapters || !readChapters || followStatus === undefined) {
     return <Text>Error, something is null...</Text>;
   }
 
@@ -53,6 +65,7 @@ export default function MangaDetailsPage({
               manga={manga}
               chapters={chapters}
               lastReadChapter={lastReadChapter}
+              isFollowing={followStatus}
             />
             <MangaChaptersView
               manga={manga}
