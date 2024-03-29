@@ -133,8 +133,15 @@ export async function markChapterAsRead(
       chapterIdsRead: chapterIds,
     },
   });
-  queryClient.invalidateQueries({
+  await queryClient.invalidateQueries({
     queryKey: ['read-chapters', mangaId],
+  });
+  await queryClient.setQueryData(['read-chapters', mangaId], (oldData: any) => {
+    const newData = new Set(oldData ?? []);
+    for (const chapterId of chapterIds) {
+      newData.add(chapterId);
+    }
+    return newData;
   });
 }
 

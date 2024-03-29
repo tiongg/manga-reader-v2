@@ -24,81 +24,15 @@ import {
   useGetMangaAndChapters,
 } from '@/utils/queries';
 import { useBoolean } from '@/utils/use-boolean';
+import ChapterEdgeMarker from './MangaReaderChapterEdgeMarker';
+import EndOfManga from './MangaReaderEndOfManga';
 import MangaReaderOverlay from './MangaReaderOverlay';
+import PageItemMemo from './MangaReaderPageItem';
 
 export type MangaReaderPageProps = {
   mangaId: string;
   chapterId: string;
 };
-
-type PageProps = {
-  url: string;
-  index: number;
-  onPress: () => void;
-};
-
-function PageItem({ url, index, onPress }: PageProps) {
-  const {
-    value: isLoading,
-    setTrue: startLoading,
-    setFalse: stopLoading,
-  } = useBoolean(true);
-  return (
-    <Pressable onPress={onPress}>
-      {isLoading && (
-        <Box
-          height="$full"
-          width="$full"
-          position="absolute"
-          justifyContent="center"
-        >
-          <Spinner size="large" />
-        </Box>
-      )}
-      <Image
-        source={url}
-        alt={`Page ${index + 1}`}
-        resizeMode="contain"
-        margin="auto"
-        style={{
-          height: '100%',
-          width: Dimensions.get('window').width,
-        }}
-        onLoadStart={startLoading}
-        onLoadEnd={stopLoading}
-      />
-    </Pressable>
-  );
-}
-
-function EndOfManga() {
-  return (
-    <Box
-      justifyContent="center"
-      alignItems="center"
-      style={{
-        height: '100%',
-        width: Dimensions.get('window').width,
-      }}
-    >
-      <Text>More by author:</Text>
-    </Box>
-  );
-}
-
-//Placed at start/end of list to allow onStartReached/onEndREached to work properly
-function ChapterEdgeMarker() {
-  return (
-    <Box
-      style={{
-        height: '100%',
-        width: Dimensions.get('window').width,
-      }}
-    />
-  );
-}
-
-const PageItemMemo = memo(PageItem);
 
 export default function MangaReaderPage({
   route,
@@ -191,7 +125,7 @@ export default function MangaReaderPage({
         renderItem={({ item, index }) =>
           match(item)
             .with('marker', () => <ChapterEdgeMarker />)
-            .with('end_manga', () => <EndOfManga />)
+            .with('end_manga', () => <EndOfManga mangaId={mangaId} />)
             .otherwise(() => (
               <PageItemMemo
                 url={item}
