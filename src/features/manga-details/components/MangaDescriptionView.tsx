@@ -16,10 +16,9 @@ export default function MangaDescriptionView({
   const tags = manga.attributes?.tags?.filter(
     (x) => x.type === 'tag'
   ) as TagRelation[];
-  const descriptions = manga.attributes?.description ?? {
-    en: 'No description',
-  };
-  const localizedDescription = localeOrFirst(descriptions);
+  const descriptions = manga.attributes?.description!;
+  const localizedDescription =
+    localeOrFirst(descriptions) || 'No description given';
 
   return (
     <VStack backgroundColor={colors.bg2} rowGap="$6" padding="$4">

@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FadeInView from '@/components/FadeInView';
 import { colors } from '@/config/theme';
 import { FromMain } from '@/types/navigation/nav-params';
+import { getChapterTitle } from '@/utils/get-chapter-title';
 import { getMangaTitle } from '@/utils/get-manga-title';
 import { localeOrFirst } from '@/utils/locale-or-first';
 
@@ -46,12 +47,9 @@ function BottomOverlay({ currentPage, totalPages }: BottomOverlayProps) {
 function TopOverlay({ manga, chapter }: TopOverlayProps) {
   const navigation = useNavigation<FromMain>();
   const inset = useSafeAreaInsets();
-  const { volume, chapter: chapterNumber, title } = chapter.attributes!;
 
   const mangaTitle = getMangaTitle(manga);
-  const chapterTitle = `${
-    volume ? `Vol. ${volume}, ` : ''
-  }Chapter ${chapterNumber}${title ? ` - ${title}` : ''}`;
+  const chapterTitle = getChapterTitle(chapter);
 
   return (
     <FadeInView

@@ -1,6 +1,7 @@
 import { Box, Pressable, Text, VStack } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { Chapter, Manga } from 'mangadex-client';
+import { match } from 'ts-pattern';
 
 import { colors } from '@/config/theme';
 import { FromMain } from '@/types/navigation/nav-params';
@@ -27,6 +28,8 @@ function LastReadChapter({ lastRead, mangaId }: LastReadChapterProps) {
     );
   }
 
+  const lastReadChapterNumber = lastRead.attributes?.chapter ?? null;
+
   return (
     <Pressable
       onPress={() => {
@@ -37,7 +40,9 @@ function LastReadChapter({ lastRead, mangaId }: LastReadChapterProps) {
       }}
     >
       <Text color={colors.words1} paddingBottom="$1">
-        Chapter {lastRead.attributes?.chapter}
+        {match(lastReadChapterNumber)
+          .with(null, () => 'Oneshot')
+          .otherwise((x) => `Chapter ${x}`)}
       </Text>
       <Text color={colors.words2} fontSize="$sm">
         4 days ago • Page 3

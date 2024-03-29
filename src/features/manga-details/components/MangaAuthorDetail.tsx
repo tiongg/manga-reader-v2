@@ -3,6 +3,7 @@ import {
   Box,
   HStack,
   Image,
+  ScrollView,
   Spinner,
   Text,
   VStack,
@@ -84,11 +85,13 @@ export default function MangaAuthorDetail({ manga }: MangaAuthorDetailProps) {
       <Text color={colors.words1} fontWeight="600" fontSize="$lg">
         More by author
       </Text>
-      <HStack gap="$2" flex={1}>
-        {mangasToShow.map((manga, i) => (
-          <RelatedMangaItem key={i} manga={manga} />
-        ))}
-      </HStack>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <HStack gap="$2" flex={1}>
+          {mangasToShow.map((manga, i) => (
+            <RelatedMangaItem key={i} manga={manga} />
+          ))}
+        </HStack>
+      </ScrollView>
     </VStack>
   );
 }
