@@ -6,7 +6,9 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { match } from 'ts-pattern';
 
 import PageSpinner from '@/components/PageSpinner';
-import { getMangas, LIMIT, useGetAllFollows } from '@/utils/queries';
+import { colors } from '@/config/theme';
+import { getAllFollowsQuery } from '@/utils/query-options';
+import { getMangas, LIMIT } from '@/utils/service-calls';
 import FollowMangaMemo from './FollowMangaItem';
 
 /**
@@ -14,7 +16,7 @@ import FollowMangaMemo from './FollowMangaItem';
  */
 export default function FollowsPage() {
   const { data: allFollows, isPending: isPendingAllFollows } =
-    useGetAllFollows();
+    useQuery(getAllFollowsQuery());
 
   const mangaQueryOffset = useRef(0);
   const followMangaIds = Object.keys(allFollows ?? {});
@@ -64,7 +66,7 @@ export default function FollowsPage() {
             onRefresh={() => {
               refetchManga();
             }}
-            tintColor="$light200"
+            tintColor={colors.white}
           />
         }
         ListHeaderComponent={

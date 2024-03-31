@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, Text, View, VStack } from '@gluestack-ui/themed';
+import { useQueries } from '@tanstack/react-query';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import PageSpinner from '@/components/PageSpinner';
@@ -8,10 +9,12 @@ import { colors } from '@/config/theme';
 import { ScreenProps } from '@/types/navigation/nav-params';
 import { getLastReadChapter } from '@/utils/get-last-read-chapter';
 import {
-  useGetFollowStatus,
-  useGetMangaAndChapters,
-  useGetReadMarkers,
-} from '@/utils/queries';
+  getChaptersQuery,
+  getFollowStatusQuery,
+  getMangaQuery,
+  getReadMarkersQuery,
+} from '@/utils/query-options';
+import { getMangaFollowStatus } from '@/utils/service-calls';
 import MangaAuthorDetail from './components/MangaAuthorDetail';
 import MangaChaptersView from './components/MangaChaptersView';
 import MangaDescriptionView from './components/MangaDescriptionView';
@@ -28,23 +31,33 @@ export default function MangaDetailsPage({
   } = route;
   const inset = useSafeAreaInsets();
 
-  const {
-    manga: { data: manga, isPending: isPendingManga },
-    chapters: { data: chapters, isPending: isPendingChapters },
-  } = useGetMangaAndChapters(mangaId);
+  // const {
+  //   manga: { data: manga, isPending: isPendingManga },
+  //   chapters: { data: chapters, isPending: isPendingChapters },
+  // } = useGetMangaAndChapters(mangaId);
 
-  const { data: readChapters, isPending: isPendingReadMarkers } =
-    useGetReadMarkers(mangaId);
+  // const { data: readChapters, isPending: isPendingReadMarkers } =
+  //   useGetReadMarkers(mangaId);
 
-  const { data: followStatus, isPending: isPendingFollowStatus } =
-    useGetFollowStatus(mangaId);
+  // const { data: followStatus, isPending: isPendingFollowStatus } =
+  //   useGetFollowStatus(mangaId);
 
-  if (
-    isPendingChapters ||
-    isPendingManga ||
-    isPendingReadMarkers ||
-    isPendingFollowStatus
-  ) {
+  const res = useQueries({
+    queries: [
+      getMangaQuery(mangaId),
+      getChaptersQuery(mangaId),
+      getReadMarkersQuery(mangaId),
+      getFollowStatusQuery(mangaId),
+    ],
+  });
+  const [
+    { data: manga },
+    { data: chapters },
+    { data: readChapters },
+    { data: followStatus },
+  ] = res;
+
+  if (res.some((r) => r.isLoading)) {
     return <PageSpinner insetTop />;
   }
 

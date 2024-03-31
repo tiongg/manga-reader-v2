@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Dimensions, FlatList } from 'react-native';
 import { Box, Text, Toast, ToastTitle, useToast } from '@gluestack-ui/themed';
+import { useQueries } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { match } from 'ts-pattern';
@@ -10,10 +11,11 @@ import TopInset from '@/components/TopInset';
 import { colors } from '@/config/theme';
 import { ScreenProps } from '@/types/navigation/nav-params';
 import {
-  markChapterAsRead,
-  useGetChapterImages,
-  useGetMangaAndChapters,
-} from '@/utils/queries';
+  getChapterImagesQuery,
+  getChaptersQuery,
+  getMangaQuery,
+} from '@/utils/query-options';
+import { markChapterAsRead } from '@/utils/service-calls';
 import { useBoolean } from '@/utils/use-boolean';
 import ChapterEdgeMarker from './MangaReaderChapterEdgeMarker';
 import EndOfManga from './MangaReaderEndOfManga';
@@ -45,12 +47,17 @@ export default function MangaReaderPage({
   const [currentPage, setCurrentPage] = useState(0);
 
   //Queries
-  const { data: pageUrls, isLoading: isLoadingPages } =
-    useGetChapterImages(chapterId);
-  const {
-    manga: { data: manga, isLoading: isMangaLoading },
-    chapters: { data: chapters, isLoading: isChaptersLoading },
-  } = useGetMangaAndChapters(mangaId);
+  const [
+    { data: manga, isLoading: isMangaLoading },
+    { data: chapters, isLoading: isChaptersLoading },
+    { data: pageUrls, isLoading: isLoadingPages },
+  ] = useQueries({
+    queries: [
+      getMangaQuery(mangaId),
+      getChaptersQuery(mangaId),
+      getChapterImagesQuery(chapterId),
+    ],
+  });
 
   //Scroll back to start when chapter changes
   const startAtPage = useRef(0);

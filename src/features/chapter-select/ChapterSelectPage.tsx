@@ -1,10 +1,15 @@
 import { ScrollView, Spinner, Text, View, VStack } from '@gluestack-ui/themed';
+import { useQueries } from '@tanstack/react-query';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import TopInset from '@/components/TopInset';
 import { colors } from '@/config/theme';
 import { ScreenProps } from '@/types/navigation/nav-params';
-import { useGetMangaAndChapters, useGetReadMarkers } from '@/utils/queries';
+import {
+  getChaptersQuery,
+  getMangaQuery,
+  getReadMarkersQuery,
+} from '@/utils/query-options';
 import MangaHeaderBar from '../manga-details/components/MangaHeaderBar';
 import ChapterSelectItem from './ChapterSelectItem';
 
@@ -19,12 +24,17 @@ export default function ChapterSelectPage({
     params: { mangaId },
   } = route;
 
-  const {
-    manga: { data: manga, isLoading: isLoadingManga },
-    chapters: { data: chapters, isLoading: isLoadingChapters },
-  } = useGetMangaAndChapters(mangaId);
-  const { data: readChapters, isLoading: isLoadingRead } =
-    useGetReadMarkers(mangaId);
+  const [
+    { data: manga, isLoading: isLoadingManga },
+    { data: chapters, isLoading: isLoadingChapters },
+    { data: readChapters, isLoading: isLoadingRead },
+  ] = useQueries({
+    queries: [
+      getMangaQuery(mangaId),
+      getChaptersQuery(mangaId),
+      getReadMarkersQuery(mangaId),
+    ],
+  });
 
   const inset = useSafeAreaInsets();
 

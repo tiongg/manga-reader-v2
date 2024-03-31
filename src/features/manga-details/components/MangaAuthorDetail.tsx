@@ -9,6 +9,7 @@ import {
   VStack,
 } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
+import { useQuery } from '@tanstack/react-query';
 import { Manga } from 'mangadex-client';
 
 import { colors } from '@/config/theme';
@@ -17,7 +18,7 @@ import { getCoverArtUrlFromManga } from '@/utils/cover-art-url';
 import { getMangaTitle } from '@/utils/get-manga-title';
 import { getRelationship } from '@/utils/get-relationship';
 import { AuthorRelation } from '@/utils/missing-types';
-import { useGetAuthorMangas } from '@/utils/queries';
+import { getAuthorMangasQuery } from '@/utils/query-options';
 
 export type MangaAuthorDetailProps = {
   manga: Manga;
@@ -57,8 +58,9 @@ function RelatedMangaItem({ manga }: { manga: Manga }) {
 export default function MangaAuthorDetail({ manga }: MangaAuthorDetailProps) {
   const author = getRelationship<AuthorRelation>(manga, 'author');
 
-  const { data: authorMangas, isLoading: isLoadingAuthorMangas } =
-    useGetAuthorMangas(author.id!);
+  const { data: authorMangas, isLoading: isLoadingAuthorMangas } = useQuery(
+    getAuthorMangasQuery(author.id!)
+  );
 
   if (isLoadingAuthorMangas) {
     return <Spinner />;

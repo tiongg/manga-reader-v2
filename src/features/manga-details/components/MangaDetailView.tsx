@@ -10,6 +10,7 @@ import {
   VStack,
 } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
+import { useMutation } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
 import { capitalize } from 'lodash';
 import { Chapter, Manga } from 'mangadex-client';
@@ -21,7 +22,10 @@ import { getCoverArtUrlFromManga } from '@/utils/cover-art-url';
 import { getMangaTitle } from '@/utils/get-manga-title';
 import { getRelationship } from '@/utils/get-relationship';
 import { AuthorRelation } from '@/utils/missing-types';
-import { useFollowManga, useUnfollowManga } from '@/utils/queries';
+import {
+  getFollowMangaMutation,
+  getUnfollowMangaMutation,
+} from '@/utils/query-options';
 import { useBoolean } from '@/utils/use-boolean';
 
 export type MangaDetailViewProps = {
@@ -41,10 +45,11 @@ export default function MangaDetailView({
 
   const { value: isFollowing, toggle: toggleFollowing } =
     useBoolean(isFollowingInital);
-  const { mutate: followManga, isPending: isFollowingMutation } =
-    useFollowManga(manga.id!);
+  const { mutate: followManga, isPending: isFollowingMutation } = useMutation(
+    getFollowMangaMutation(manga.id!)
+  );
   const { mutate: unfollowManga, isPending: isUnfollowingMutation } =
-    useUnfollowManga(manga.id!);
+    useMutation(getUnfollowMangaMutation(manga.id!));
 
   const imageUrl = getCoverArtUrlFromManga(manga);
   const status = manga.attributes?.status;

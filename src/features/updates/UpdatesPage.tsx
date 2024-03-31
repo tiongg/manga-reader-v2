@@ -6,9 +6,10 @@ import _ from 'lodash';
 import { Manga } from 'mangadex-client';
 
 import PageSpinner from '@/components/PageSpinner';
+import { colors } from '@/config/theme';
 import { useMangadexAuth } from '@/providers/MangadexAuth.provider';
 import { getRelationship } from '@/utils/get-relationship';
-import { getFeedWithManga } from '@/utils/queries';
+import { getFeedWithManga } from '@/utils/service-calls';
 import MangaUpdateMemo from './MangaUpdateItem';
 
 export default function UpdatesPage() {
@@ -43,7 +44,7 @@ export default function UpdatesPage() {
             onRefresh={() => {
               refetchFeed();
             }}
-            tintColor="$light200"
+            tintColor={colors.white}
           />
         }
         contentContainerStyle={{
