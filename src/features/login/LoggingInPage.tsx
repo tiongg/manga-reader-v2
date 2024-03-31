@@ -11,7 +11,7 @@ export default function LoggingInPage() {
       display="flex"
       justifyContent="center"
       flex={1}
-      backgroundColor={colors.bg1}
+      backgroundColor={colors.backgroundDark950}
       paddingTop={insets.top}
     >
       <VStack rowGap="$4">

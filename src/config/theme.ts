@@ -1,6 +1,16 @@
 import { config as defaultConfig } from '@gluestack-ui/config';
 import { createConfig } from '@gluestack-ui/themed';
 
+/*Original colors:
+    words1: '#ffffff'
+    words2: '#bebebe'
+    bg1: '#131313'
+    bg2: '#212121'
+    bg3: '#252525'
+    bg4: '#3b3b3b'
+    bg5: '#303030'
+ */
+
 //https://gluestack.io/ui/docs/theme-configuration/customizing-theme/eject-library
 export const theme = createConfig({
   ...defaultConfig,
@@ -14,13 +24,13 @@ export const theme = createConfig({
     },
     colors: {
       ...defaultConfig.tokens.colors,
-      words1: '#ffffff',
-      words2: '#bebebe',
-      bg1: '#131313',
-      bg2: '#212121',
-      bg3: '#252525',
-      bg4: '#3b3b3b',
-      bg5: '#303030',
+      // words1: '#ffffff',
+      // words2: '#bebebe',
+      backgroundDark950: '#131313',
+      backgroundDark900: '#212121',
+      backgroundDark800: '#252525',
+      backgroundDark700: '#3b3b3b',
+      backgroundDark600: '#303030',
       btn: '#4b9bfc',
     },
   },

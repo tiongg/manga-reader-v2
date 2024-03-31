@@ -10,7 +10,7 @@ export type PageSpinnerProps = {
 
 export default function PageSpinner({
   insetTop = false,
-  bgColor = colors.bg2,
+  bgColor = colors.backgroundDark900,
 }: PageSpinnerProps) {
   return (
     <>

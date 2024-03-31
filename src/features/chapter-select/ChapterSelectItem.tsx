@@ -24,7 +24,7 @@ export default function ChapterSelectItem({
     <Pressable
       paddingHorizontal="$4"
       paddingVertical="$3.5"
-      borderBottomColor={colors.bg5}
+      borderBottomColor={colors.backgroundDark600}
       borderBottomWidth={1}
       onPress={() => {
         navigation.navigate('MangaReader', {

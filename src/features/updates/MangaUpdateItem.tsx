@@ -40,13 +40,13 @@ export function MangaUpdateItem({
         <Box flex={1}>
           <Text
             fontWeight="$bold"
-            color={colors.words1}
+            color={colors.textDark0}
             numberOfLines={2}
             ellipsizeMode="tail"
           >
             {mangaTitle}
           </Text>
-          <Text numberOfLines={1}>
+          <Text numberOfLines={1} color={colors.textDark200}>
             Chapter {chapterAttributes.chapter}
             {chapterAttributes.title ? ` - ${chapterAttributes.title}` : ''}
           </Text>

@@ -70,10 +70,14 @@ export default function MangaDetailsPage({
   return (
     <>
       <TopInset />
-      <View paddingBottom={inset.bottom} flex={1} backgroundColor={colors.bg2}>
+      <View
+        paddingBottom={inset.bottom}
+        flex={1}
+        backgroundColor={colors.backgroundDark900}
+      >
         <MangaHeaderBar manga={manga} />
         <ScrollView>
-          <VStack flex={1} backgroundColor={colors.bg1} gap="$4">
+          <VStack flex={1} backgroundColor={colors.backgroundDark950} gap="$4">
             <MangaDetailView
               manga={manga}
               chapters={chapters}

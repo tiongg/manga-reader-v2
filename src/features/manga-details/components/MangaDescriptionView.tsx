@@ -21,9 +21,9 @@ export default function MangaDescriptionView({
     localeOrFirst(descriptions) || 'No description given';
 
   return (
-    <VStack backgroundColor={colors.bg2} rowGap="$6" padding="$4">
+    <VStack backgroundColor={colors.backgroundDark900} rowGap="$6" padding="$4">
       <VStack rowGap="$2">
-        <Text color={colors.words1} fontWeight="600" fontSize="$lg">
+        <Text color={colors.textDark0} fontWeight="600" fontSize="$lg">
           Genres
         </Text>
         <HStack flexWrap="wrap" gap="$1.5">
@@ -33,10 +33,10 @@ export default function MangaDescriptionView({
         </HStack>
       </VStack>
       <VStack rowGap="$2">
-        <Text color={colors.words1} fontWeight="600" fontSize="$lg">
+        <Text color={colors.textDark0} fontWeight="600" fontSize="$lg">
           Description
         </Text>
-        <Text color={colors.words2} lineHeight="$md">
+        <Text color={colors.textDark400} lineHeight="$md">
           {localizedDescription}
         </Text>
       </VStack>

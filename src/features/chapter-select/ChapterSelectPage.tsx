@@ -49,13 +49,17 @@ export default function ChapterSelectPage({
   return (
     <>
       <TopInset />
-      <View paddingBottom={inset.bottom} flex={1} backgroundColor={colors.bg2}>
+      <View
+        paddingBottom={inset.bottom}
+        flex={1}
+        backgroundColor={colors.backgroundDark900}
+      >
         <MangaHeaderBar manga={manga} />
         <ScrollView>
-          <Text color={colors.words1} padding="$3.5" fontWeight="600">
+          <Text color={colors.textDark0} padding="$3.5" fontWeight="600">
             {chapters.length} chapters
           </Text>
-          <VStack flex={1} backgroundColor={colors.bg2}>
+          <VStack flex={1} backgroundColor={colors.backgroundDark900}>
             {chapters.map((chapter) => (
               <ChapterSelectItem
                 key={chapter.id!}

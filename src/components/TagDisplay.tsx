@@ -14,7 +14,7 @@ export default function TagDisplay({ tag }: TagDisplayProps) {
 
   return (
     <Box backgroundColor={colors.bg4} borderRadius="$md">
-      <Text color={colors.words1} padding="$2" fontSize="$sm">
+      <Text color={colors.textDark0} padding="$2" fontSize="$sm">
         {localizedTagName}
       </Text>
     </Box>

@@ -33,10 +33,10 @@ function BottomOverlay({ currentPage, totalPages }: BottomOverlayProps) {
         width: '100%',
         height: 30 + inset.bottom,
         bottom: 0,
-        backgroundColor: colors.bg2,
+        backgroundColor: colors.backgroundDark900,
       }}
     >
-      <Text color={colors.words1} textAlign="center" paddingTop="$3">
+      <Text color={colors.textDark0} textAlign="center" paddingTop="$3">
         {currentPage + 1} / {totalPages}
       </Text>
       <Box height={inset.bottom} />
@@ -61,7 +61,7 @@ function TopOverlay({ manga, chapter }: TopOverlayProps) {
       <BlurView
         style={{
           height: 35 + inset.top,
-          borderBottomColor: colors.bg5,
+          borderBottomColor: colors.backgroundDark600,
           borderBottomWidth: 1,
           justifyContent: 'center',
           padding: 12,
@@ -86,14 +86,14 @@ function TopOverlay({ manga, chapter }: TopOverlayProps) {
         intensity={100}
       >
         <Text
-          color={colors.words1}
+          color={colors.textDark0}
           fontSize="$sm"
           lineHeight="$sm"
           numberOfLines={1}
         >
           {mangaTitle}
         </Text>
-        <Text color={colors.words2} fontSize="$xs" numberOfLines={1}>
+        <Text color={colors.textDark400} fontSize="$xs" numberOfLines={1}>
           {chapterTitle}
         </Text>
       </BlurView>

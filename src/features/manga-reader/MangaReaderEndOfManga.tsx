@@ -24,8 +24,13 @@ export default function EndOfManga({ mangaId }: EndOfMangaProps) {
         width: Dimensions.get('window').width,
       }}
     >
-      <Box bgColor={colors.bg3} width="$4/5" height="$2/3" padding="$4">
-        <Text fontSize="$lg" color={colors.words1}>
+      <Box
+        bgColor={colors.backgroundDark800}
+        width="$4/5"
+        height="$2/3"
+        padding="$4"
+      >
+        <Text fontSize="$lg" color={colors.textDark0}>
           More by author:
         </Text>
         <Button

@@ -42,10 +42,15 @@ export function FollowMangaItem({ manga }: FollowMangaItemProps) {
         alt={mangaTitle}
       />
       <Box paddingVertical="$1">
-        <Text numberOfLines={2} size="xs" color={colors.words1} lineHeight={14}>
+        <Text
+          numberOfLines={2}
+          size="xs"
+          color={colors.textDark0}
+          lineHeight={14}
+        >
           {mangaTitle}
         </Text>
-        <Text numberOfLines={1} size="2xs" color={colors.words2}>
+        <Text numberOfLines={1} size="2xs" color={colors.textDark400}>
           {authorName}
         </Text>
       </Box>

@@ -78,7 +78,7 @@ export default function MangaReaderPage({
   };
 
   if (isLoadingPages || isMangaLoading || isChaptersLoading) {
-    return <PageSpinner insetTop bgColor={colors.bg1} />;
+    return <PageSpinner insetTop bgColor={colors.backgroundDark950} />;
   }
 
   if (!manga || !pageUrls || !chapters) {
@@ -110,7 +110,7 @@ export default function MangaReaderPage({
         ref={flatListRef}
         style={{
           paddingBottom: inset.bottom,
-          backgroundColor: colors.bg1,
+          backgroundColor: colors.backgroundDark950,
         }}
         horizontal
         inverted

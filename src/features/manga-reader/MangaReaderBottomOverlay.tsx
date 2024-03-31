@@ -22,10 +22,10 @@ export default function MangaReaderBottomOverlay({
         width: '100%',
         height: 30 + inset.bottom,
         bottom: 0,
-        backgroundColor: colors.bg2,
+        backgroundColor: colors.backgroundDark900,
       }}
     >
-      <Text color={colors.words1} textAlign="center" paddingTop="$3">
+      <Text color={colors.textDark0} textAlign="center" paddingTop="$3">
         {currentPage + 1} / {totalPages}
       </Text>
       <Box height={inset.bottom} />

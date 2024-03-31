@@ -78,7 +78,7 @@ export default function MangaDetailView({
   const nextChapterId = chapters[nextChapterIndex]?.id;
 
   return (
-    <VStack rowGap="$3" backgroundColor={colors.bg2}>
+    <VStack rowGap="$3" backgroundColor={colors.backgroundDark900}>
       <Box width="$full" marginTop="$3" display="flex" alignItems="center">
         <Image
           style={{ height: 180, width: '100%' }}
@@ -92,11 +92,11 @@ export default function MangaDetailView({
         fontSize="$xl"
         fontWeight="bold"
         marginHorizontal="$3"
-        color={colors.words1}
+        color={colors.textDark0}
       >
         {mangaTitle}
       </Text>
-      <Text textAlign="center" fontSize="$sm" color={colors.words2}>
+      <Text textAlign="center" fontSize="$sm" color={colors.textDark400}>
         {author.attributes.name} • {capitalize(status)}
       </Text>
       <HStack

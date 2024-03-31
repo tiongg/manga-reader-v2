@@ -33,12 +33,16 @@ export default function LoginPage() {
   } = useForm<UsernamePassword>();
 
   return (
-    <View flex={1} backgroundColor={colors.bg1} paddingTop={insets.top}>
+    <View
+      flex={1}
+      backgroundColor={colors.backgroundDark950}
+      paddingTop={insets.top}
+    >
       <VStack padding="$4" marginTop="40%" paddingBottom="$16">
         <Text textAlign="center" size="5xl" fontWeight="$bold">
           Welcome back
         </Text>
-        <Text textAlign="center" color={colors.words2}>
+        <Text textAlign="center" color={colors.textDark400}>
           Login with MangaDex account
         </Text>
       </VStack>

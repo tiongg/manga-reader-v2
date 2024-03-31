@@ -22,7 +22,7 @@ export default function MangaHeaderBar({ manga }: MangaHeaderBarProps) {
       alignItems="center"
       padding="$2"
       height={40}
-      backgroundColor={colors.bg1}
+      backgroundColor={colors.backgroundDark950}
     >
       <Pressable
         onPress={() => navigation.goBack()}
@@ -32,7 +32,7 @@ export default function MangaHeaderBar({ manga }: MangaHeaderBarProps) {
         paddingHorizontal="$4"
       >
         <Ionicons
-          style={{ color: colors.words1 }}
+          style={{ color: colors.textDark0 }}
           name="chevron-back-outline"
           size={25}
         />
@@ -42,7 +42,7 @@ export default function MangaHeaderBar({ manga }: MangaHeaderBarProps) {
         fontWeight="bold"
         textAlign="center"
         margin="auto"
-        color={colors.words1}
+        color={colors.textDark0}
         width="$64"
         numberOfLines={1}
       >

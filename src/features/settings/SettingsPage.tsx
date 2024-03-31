@@ -14,7 +14,7 @@ export default function SettingsPage() {
       justifyContent="center"
       alignItems="center"
       flex={1}
-      backgroundColor={colors.bg1}
+      backgroundColor={colors.backgroundDark950}
       paddingTop={insets.top}
     >
       <Button

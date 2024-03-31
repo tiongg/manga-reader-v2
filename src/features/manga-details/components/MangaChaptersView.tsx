@@ -22,7 +22,7 @@ function LastReadChapter({ lastRead, mangaId }: LastReadChapterProps) {
 
   if (!lastRead) {
     return (
-      <Text color={colors.words1} paddingVertical="$2">
+      <Text color={colors.textDark0} paddingVertical="$2">
         No chapters read yet!
       </Text>
     );
@@ -39,12 +39,12 @@ function LastReadChapter({ lastRead, mangaId }: LastReadChapterProps) {
         });
       }}
     >
-      <Text color={colors.words1} paddingBottom="$1">
+      <Text color={colors.textDark0} paddingBottom="$1">
         {match(lastReadChapterNumber)
           .with(null, () => 'Oneshot')
           .otherwise((x) => `Chapter ${x}`)}
       </Text>
-      <Text color={colors.words2} fontSize="$sm">
+      <Text color={colors.textDark400} fontSize="$sm">
         4 days ago • Page 3
       </Text>
     </Pressable>
@@ -60,13 +60,17 @@ export default function MangaChaptersView({
   const mangaId = manga.id!;
 
   return (
-    <VStack rowGap="$4" backgroundColor={colors.bg2} padding="$4">
-      <Text color={colors.words1} fontSize="$lg" fontWeight="600">
+    <VStack rowGap="$4" backgroundColor={colors.backgroundDark900} padding="$4">
+      <Text color={colors.textDark0} fontSize="$lg" fontWeight="600">
         Chapters
       </Text>
-      <Box padding="$5" borderRadius="$md" backgroundColor={colors.bg3}>
+      <Box
+        padding="$5"
+        borderRadius="$md"
+        backgroundColor={colors.backgroundDark800}
+      >
         <Text
-          color={colors.words1}
+          color={colors.textDark0}
           fontSize="$lg"
           fontWeight="600"
           paddingBottom="$4"
@@ -77,7 +81,7 @@ export default function MangaChaptersView({
       </Box>
       <Pressable
         alignItems="center"
-        backgroundColor={colors.bg4}
+        backgroundColor={colors.backgroundDark700}
         padding="$4"
         borderRadius="$md"
         onPress={() => navigation.navigate('ChapterSelect', { mangaId })}

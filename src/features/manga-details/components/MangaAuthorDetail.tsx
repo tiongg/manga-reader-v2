@@ -45,7 +45,7 @@ function RelatedMangaItem({ manga }: { manga: Manga }) {
         }}
         resizeMode="contain"
       />
-      <Text color={colors.words1} fontSize="$xs" numberOfLines={2}>
+      <Text color={colors.textDark0} fontSize="$xs" numberOfLines={2}>
         {mangaTitle}
       </Text>
     </Pressable>
@@ -82,8 +82,8 @@ export default function MangaAuthorDetail({ manga }: MangaAuthorDetailProps) {
   );
 
   return (
-    <VStack backgroundColor={colors.bg2} rowGap="$2" padding="$4">
-      <Text color={colors.words1} fontWeight="600" fontSize="$lg">
+    <VStack backgroundColor={colors.backgroundDark900} rowGap="$2" padding="$4">
+      <Text color={colors.textDark0} fontWeight="600" fontSize="$lg">
         More by author
       </Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
