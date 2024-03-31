@@ -2,6 +2,7 @@ import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Box,
+  Divider,
   HStack,
   Image,
   Pressable,
@@ -92,6 +93,7 @@ export default function MangaDetailView({
         fontSize="$xl"
         fontWeight="bold"
         marginHorizontal="$3"
+        paddingHorizontal="$3"
         color={colors.textDark0}
       >
         {mangaTitle}
@@ -99,12 +101,7 @@ export default function MangaDetailView({
       <Text textAlign="center" fontSize="$sm" color={colors.textDark400}>
         {author.attributes.name} • {capitalize(status)}
       </Text>
-      <HStack
-        alignItems="center"
-        flex={1}
-        paddingBottom="$4"
-        paddingHorizontal="$4"
-      >
+      <HStack alignItems="center" flex={1} paddingBottom="$4">
         <Pressable
           flex={1}
           onPress={() => {
@@ -119,11 +116,14 @@ export default function MangaDetailView({
             style={{ textAlign: 'center' }}
             color={colors.btn}
             name="play-outline"
-            size={30}
+            size={35}
             disabled={!nextChapterId}
           />
-          <Text textAlign="center">{lastReadChapter ? 'Resume' : 'Read'}</Text>
+          <Text textAlign="center" fontSize="$sm">
+            {lastReadChapter ? 'Resume' : 'Read'}
+          </Text>
         </Pressable>
+        <Divider orientation="vertical" bgColor="$backgroundDark700" />
         <Pressable
           flex={1}
           onPress={() => {
@@ -134,10 +134,13 @@ export default function MangaDetailView({
             style={{ textAlign: 'center' }}
             color={colors.btn}
             name="list-outline"
-            size={30}
+            size={35}
           />
-          <Text textAlign="center">{numChapters} Chapters</Text>
+          <Text textAlign="center" fontSize="$sm">
+            {numChapters} Chapters
+          </Text>
         </Pressable>
+        <Divider orientation="vertical" bgColor="$backgroundDark700" />
         <Pressable
           flex={1}
           onPress={() => {
@@ -155,9 +158,11 @@ export default function MangaDetailView({
             style={{ textAlign: 'center' }}
             color={colors.btn}
             name={isFollowing ? 'heart' : 'heart-outline'}
-            size={30}
+            size={35}
           />
-          <Text textAlign="center">{isFollowing ? 'Following' : 'Follow'}</Text>
+          <Text textAlign="center" fontSize="$sm">
+            {isFollowing ? 'Favourited' : 'Favourite'}
+          </Text>
         </Pressable>
       </HStack>
     </VStack>

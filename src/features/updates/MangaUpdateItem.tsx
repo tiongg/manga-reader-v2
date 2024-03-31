@@ -26,10 +26,10 @@ export function MangaUpdateItem({
       onPress={() => {
         navigate.navigate('MangaDetails', { mangaId: manga.id! });
       }}
-      paddingHorizontal="$2"
+      paddingHorizontal="$4"
       flex={1}
     >
-      <Box gap="$2" display="flex" flexDirection="row">
+      <Box gap="$3" display="flex" flexDirection="row">
         <Image
           source={coverArtUrl}
           alt={`${mangaTitle} cover`}
@@ -38,15 +38,10 @@ export function MangaUpdateItem({
           height={100}
         />
         <Box flex={1}>
-          <Text
-            fontWeight="$bold"
-            color={colors.textDark0}
-            numberOfLines={2}
-            ellipsizeMode="tail"
-          >
+          <Text color={colors.textDark0} numberOfLines={2}>
             {mangaTitle}
           </Text>
-          <Text numberOfLines={1} color={colors.textDark200}>
+          <Text numberOfLines={1} color={colors.textDark400} fontSize="$sm">
             Chapter {chapterAttributes.chapter}
             {chapterAttributes.title ? ` - ${chapterAttributes.title}` : ''}
           </Text>

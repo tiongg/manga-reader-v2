@@ -71,7 +71,7 @@ export default function MangaReaderPage({
     });
   }, [pageUrls]);
 
-  const calculateCurrentPage = (currentX: number) => {
+  const calculateCurrentIndex = (currentX: number) => {
     const deviceWidth = Dimensions.get('window').width;
     const currentPage = Math.round(currentX / deviceWidth);
     return currentPage;
@@ -100,8 +100,8 @@ export default function MangaReaderPage({
     );
   }
   const currentChapter = chapters[currentChapterIndex];
-  const nextChapter =
-    currentChapterIndex > 0 ? chapters[currentChapterIndex - 1] : undefined;
+  const nextChapter = chapters[currentChapterIndex - 1];
+  const prevChapter = chapters[currentChapterIndex + 1];
 
   return (
     <>
@@ -118,7 +118,7 @@ export default function MangaReaderPage({
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         scrollsToTop={false}
-        onScrollToIndexFailed={() => {}}
+        onScrollToIndexFailed={(_info) => {}}
         data={[...pageUrls, ...(nextChapter ? ['marker'] : ['end_manga'])]}
         renderItem={({ item, index }) =>
           match(item)
@@ -136,7 +136,8 @@ export default function MangaReaderPage({
         keyExtractor={(x, i) => `page-${i}`}
         onMomentumScrollEnd={(event) => {
           const currentX = event.nativeEvent.contentOffset.x;
-          setCurrentPage(calculateCurrentPage(currentX));
+          const currentPage = calculateCurrentIndex(currentX);
+          setCurrentPage(currentPage);
         }}
         onEndReachedThreshold={0.1}
         onEndReached={() => {
@@ -148,7 +149,7 @@ export default function MangaReaderPage({
             return;
           }
 
-          startAtPage.current = 0;
+          startAtPage.current = 1;
           navigation.setParams({
             chapterId: nextChapter?.id!,
           });

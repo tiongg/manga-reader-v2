@@ -13,7 +13,7 @@ export default function TagDisplay({ tag }: TagDisplayProps) {
   const localizedTagName = localeOrFirst(tagNames);
 
   return (
-    <Box backgroundColor={colors.bg4} borderRadius="$md">
+    <Box backgroundColor={colors.backgroundDark600} borderRadius="$md">
       <Text color={colors.textDark0} padding="$2" fontSize="$sm">
         {localizedTagName}
       </Text>
