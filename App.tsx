@@ -3,6 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import ChapterSelectPage from '@/features/chapter-select/ChapterSelectPage';
+import DiscoverPage from '@/features/discover/DiscoverPage';
+import DownloadsPage from '@/features/downloads/DownloadsPage';
 import FollowsPage from '@/features/follows/FollowsPage';
 import LoggingInPage from '@/features/login/LoggingInPage';
 import LoginPage from '@/features/login/LoginPage';
@@ -20,10 +22,10 @@ const Stack = createNativeStackNavigator<ScreenParams>();
 
 type UsedIcons = 'compass' | 'heart' | 'time' | 'download-sharp' | 'menu';
 const ICONS_MAPPING: { [key in keyof PageParams]: UsedIcons } = {
-  Updates: 'compass',
+  Discover: 'compass',
   Favorites: 'heart',
-  // Recent: 'time',
-  // Downloads: 'download-sharp',
+  Updates: 'time',
+  Downloads: 'download-sharp',
   Settings: 'menu',
 };
 
@@ -37,9 +39,12 @@ function TabPages() {
         elevation: 0,
         shadowOffset: { width: 0, height: 0 },
       })}
+      initialRouteName="Updates"
     >
-      <Tab.Screen name="Updates" component={UpdatesPage} />
+      <Tab.Screen name="Discover" component={DiscoverPage} />
       <Tab.Screen name="Favorites" component={FollowsPage} />
+      <Tab.Screen name="Updates" component={UpdatesPage} />
+      <Tab.Screen name="Downloads" component={DownloadsPage} />
       <Tab.Screen name="Settings" component={SettingsPage} />
     </Tab.Navigator>
   );

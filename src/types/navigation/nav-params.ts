@@ -31,8 +31,10 @@ export type FromMain = FromStack<'Main'>;
 
 //For main pages (Tabs)
 export type PageParams = {
-  Updates: undefined;
+  Discover: undefined;
   Favorites: undefined;
+  Updates: undefined;
+  Downloads: undefined;
   Settings: undefined;
 };
 
