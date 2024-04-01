@@ -81,7 +81,7 @@ export default function MangaChaptersView({
       </Box>
       <Pressable
         alignItems="center"
-        backgroundColor={colors.backgroundDark700}
+        backgroundColor={colors.backgroundDark600}
         padding="$4"
         borderRadius="$md"
         onPress={() => navigation.navigate('ChapterSelect', { mangaId })}

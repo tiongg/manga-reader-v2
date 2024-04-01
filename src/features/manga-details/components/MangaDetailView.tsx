@@ -123,7 +123,7 @@ export default function MangaDetailView({
             {lastReadChapter ? 'Resume' : 'Read'}
           </Text>
         </Pressable>
-        <Divider orientation="vertical" bgColor="$backgroundDark700" />
+        <Divider orientation="vertical" bgColor="$backgroundDark600" />
         <Pressable
           flex={1}
           onPress={() => {
@@ -140,7 +140,7 @@ export default function MangaDetailView({
             {numChapters} Chapters
           </Text>
         </Pressable>
-        <Divider orientation="vertical" bgColor="$backgroundDark700" />
+        <Divider orientation="vertical" bgColor="$backgroundDark600" />
         <Pressable
           flex={1}
           onPress={() => {

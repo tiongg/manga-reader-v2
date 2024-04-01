@@ -41,7 +41,7 @@ export function getReadMarkersQuery(mangaId: string) {
   return {
     queryKey: ['read-chapters', mangaId],
     queryFn: () => getReadChapterIds(mangaId),
-    staleTime: ONE_MINUTE,
+    staleTime: ONE_HOUR,
   } satisfies UseQueryOptions;
 }
 

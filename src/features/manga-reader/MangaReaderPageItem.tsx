@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { Dimensions, Pressable } from 'react-native';
 import { Box, Image, Spinner } from '@gluestack-ui/themed';
 
@@ -10,12 +10,16 @@ export type PageProps = {
   onPress: () => void;
 };
 
+/**
+ * Individual page for reader
+ */
 export function PageItem({ url, index, onPress }: PageProps) {
   const {
     value: isLoading,
     setTrue: startLoading,
     setFalse: stopLoading,
   } = useBoolean(true);
+
   return (
     <Pressable onPress={onPress}>
       {isLoading && (
@@ -29,13 +33,16 @@ export function PageItem({ url, index, onPress }: PageProps) {
         </Box>
       )}
       <Image
+        key={url}
         source={url}
         alt={`Page ${index + 1}`}
         resizeMode="contain"
         margin="auto"
         style={{
           height: '100%',
-          width: Dimensions.get('window').width,
+          //Leave 4px gap between pages
+          width: Dimensions.get('window').width - 4,
+          marginHorizontal: 2,
         }}
         onLoadStart={startLoading}
         onLoadEnd={stopLoading}

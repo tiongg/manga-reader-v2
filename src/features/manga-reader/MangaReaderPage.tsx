@@ -14,6 +14,7 @@ import {
   getChapterImagesQuery,
   getChaptersQuery,
   getMangaQuery,
+  getReadMarkersQuery,
 } from '@/utils/query-options';
 import { markChapterAsRead } from '@/utils/service-calls';
 import { useBoolean } from '@/utils/use-boolean';
@@ -48,14 +49,15 @@ export default function MangaReaderPage({
 
   //Queries
   const [
-    { data: manga, isLoading: isMangaLoading },
-    { data: chapters, isLoading: isChaptersLoading },
-    { data: pageUrls, isLoading: isLoadingPages },
+    { data: manga, isPending: isMangaPending },
+    { data: chapters, isPending: isChaptersPending },
+    { data: pageUrls, isFetching: isFetchingPages },
   ] = useQueries({
     queries: [
       getMangaQuery(mangaId),
       getChaptersQuery(mangaId),
       getChapterImagesQuery(chapterId),
+      getReadMarkersQuery(mangaId), //Ensure read markers are loaded into cache
     ],
   });
 
@@ -69,7 +71,8 @@ export default function MangaReaderPage({
       index: startAtPage.current,
       animated: false,
     });
-  }, [pageUrls]);
+    setCurrentPage(startAtPage.current);
+  }, [pageUrls, setCurrentPage]);
 
   const calculateCurrentIndex = (currentX: number) => {
     const deviceWidth = Dimensions.get('window').width;
@@ -77,7 +80,7 @@ export default function MangaReaderPage({
     return currentPage;
   };
 
-  if (isLoadingPages || isMangaLoading || isChaptersLoading) {
+  if (isFetchingPages || isMangaPending || isChaptersPending) {
     return <PageSpinner insetTop bgColor={colors.backgroundDark950} />;
   }
 
@@ -149,7 +152,7 @@ export default function MangaReaderPage({
             return;
           }
 
-          startAtPage.current = 1;
+          startAtPage.current = 0;
           navigation.setParams({
             chapterId: nextChapter?.id!,
           });
@@ -174,6 +177,7 @@ export default function MangaReaderPage({
         <MangaReaderOverlay
           manga={manga}
           chapter={currentChapter}
+          allChapters={chapters}
           currentPage={currentPage}
           totalPages={pageUrls?.length ?? -1}
         />

@@ -8,6 +8,7 @@ export function useBoolean(initalValue: boolean = false) {
 
   return {
     value,
+    setValue,
     toggle,
     setTrue,
     setFalse,
