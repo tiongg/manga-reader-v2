@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Pressable, Text } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { Chapter, Manga } from 'mangadex-client';
@@ -12,7 +13,7 @@ export type ChapterSelectItemProps = {
   isRead: boolean;
 };
 
-export default function ChapterSelectItem({
+export function ChapterSelectItem({
   chapter,
   manga,
   isRead,
@@ -39,3 +40,6 @@ export default function ChapterSelectItem({
     </Pressable>
   );
 }
+
+const ChapterSelectItemMemo = memo(ChapterSelectItem);
+export default ChapterSelectItemMemo;

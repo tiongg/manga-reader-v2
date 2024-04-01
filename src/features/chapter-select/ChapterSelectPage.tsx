@@ -1,5 +1,7 @@
-import { ScrollView, Spinner, Text, View, VStack } from '@gluestack-ui/themed';
+import { FlatList } from 'react-native';
+import { Spinner, Text, View } from '@gluestack-ui/themed';
 import { useQueries } from '@tanstack/react-query';
+import { Chapter } from 'mangadex-client';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import TopInset from '@/components/TopInset';
@@ -11,7 +13,7 @@ import {
   getReadMarkersQuery,
 } from '@/utils/query-options';
 import MangaHeaderBar from '../manga-details/components/MangaHeaderBar';
-import ChapterSelectItem from './ChapterSelectItem';
+import ChapterSelectItemMemo from './ChapterSelectItem';
 
 export type ChapterSelectPageProps = {
   mangaId: string;
@@ -55,21 +57,22 @@ export default function ChapterSelectPage({
         backgroundColor={colors.backgroundDark900}
       >
         <MangaHeaderBar manga={manga} />
-        <ScrollView>
-          <Text color={colors.textDark0} padding="$3.5" fontWeight="600">
-            {chapters.length} chapters
-          </Text>
-          <VStack flex={1} backgroundColor={colors.backgroundDark900}>
-            {chapters.map((chapter) => (
-              <ChapterSelectItem
-                key={chapter.id!}
-                chapter={chapter}
-                manga={manga}
-                isRead={readChapters.has(chapter.id!)}
-              />
-            ))}
-          </VStack>
-        </ScrollView>
+        <FlatList<Chapter>
+          data={chapters}
+          ListHeaderComponent={
+            <Text color={colors.textDark0} padding="$3.5" fontWeight="600">
+              {chapters.length} chapters
+            </Text>
+          }
+          keyExtractor={(item) => item.id!}
+          renderItem={({ item }) => (
+            <ChapterSelectItemMemo
+              chapter={item}
+              manga={manga}
+              isRead={readChapters.has(item.id!)}
+            />
+          )}
+        />
       </View>
     </>
   );
