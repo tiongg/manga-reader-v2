@@ -8,7 +8,7 @@ import { match } from 'ts-pattern';
 
 import PageSpinner from '@/components/PageSpinner';
 import TopInset from '@/components/TopInset';
-import { colors } from '@/config/theme';
+import { colors, theme } from '@/config/theme';
 import { ScreenProps } from '@/types/navigation/nav-params';
 import {
   getChapterImagesQuery,
@@ -105,6 +105,8 @@ export default function MangaReaderPage({
   const currentChapter = chapters[currentChapterIndex];
   const nextChapter = chapters[currentChapterIndex - 1];
   const prevChapter = chapters[currentChapterIndex + 1];
+  const { width: screenWidth } = Dimensions.get('window');
+  const gap = theme.tokens.space['2'];
 
   return (
     <>
@@ -115,9 +117,15 @@ export default function MangaReaderPage({
           paddingBottom: inset.bottom,
           backgroundColor: colors.backgroundDark950,
         }}
+        contentContainerStyle={{
+          gap,
+        }}
         horizontal
         inverted
-        pagingEnabled
+        snapToInterval={screenWidth + gap}
+        snapToAlignment="start"
+        decelerationRate="fast"
+        disableIntervalMomentum
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         scrollsToTop={false}
@@ -168,8 +176,8 @@ export default function MangaReaderPage({
         }}
         onTouchMove={hideOverlay}
         getItemLayout={(data, index) => ({
-          length: Dimensions.get('window').width,
-          offset: Dimensions.get('window').width * index,
+          length: screenWidth + gap,
+          offset: screenWidth * index + index * gap,
           index,
         })}
       />

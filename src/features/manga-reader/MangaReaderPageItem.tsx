@@ -40,9 +40,7 @@ export function PageItem({ url, index, onPress }: PageProps) {
         margin="auto"
         style={{
           height: '100%',
-          //Leave 4px gap between pages
-          width: Dimensions.get('window').width - 4,
-          marginHorizontal: 2,
+          width: Dimensions.get('window').width,
         }}
         onLoadStart={startLoading}
         onLoadEnd={stopLoading}
