@@ -1,13 +1,10 @@
 {
   "expo": {
     "name": "manga-reader",
-    "slug": "manga-reader",
+    "slug": "reader-v2",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "experinents": {
-      "tsconfigPaths": true
-    },
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -18,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.depression.readerv2"
     },
     "android": {
       "adaptiveIcon": {
@@ -28,6 +26,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c9146956-b140-4ef9-8487-af78d97205b4"
+      }
+    },
+    "owner": "depression"
   }
 }

@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "_COMMENT": "--tunnel used due to wsl not forwarding ports correctly",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "generate-md-client": "npx openapi-ts -i ./open-api-specs/mangadex-api.yaml -o ./mangadex-client --useOptions -c fetch",
     "generate-jikan-client": "npx openapi-ts -i ./open-api-specs/jikan-api.json -o ./jikan-client --useOptions -c fetch",
-    "generate-libs": "npm run generate-md-client && npm run generate-jikan-client"
+    "generate-libs": "npm run generate-md-client && npm run generate-jikan-client",
+    "eas-build-post-install": "npm run generate-libs"
   },
   "dependencies": {
     "@gluestack-style/react": "^1.0.52",
@@ -43,6 +43,7 @@
     "@types/lodash": "^4.17.0",
     "@types/react": "~18.2.14",
     "babel-plugin-module-resolver": "^5.0.0",
+    "eas-cli": "^7.6.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
