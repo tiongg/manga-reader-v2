@@ -8,8 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "generate-md-client": "npx openapi-ts -i ./open-api-specs/mangadex-api.yaml -o ./mangadex-client --useOptions -c fetch",
-    "generate-jikan-client": "npx openapi-ts -i ./open-api-specs/jikan-api.json -o ./jikan-client --useOptions -c fetch",
-    "generate-libs": "npm run generate-md-client && npm run generate-jikan-client",
+    "generate-libs": "npm run generate-md-client",
     "eas-build-post-install": "npm run generate-libs"
   },
   "dependencies": {

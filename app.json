@@ -32,6 +32,12 @@
         "projectId": "c9146956-b140-4ef9-8487-af78d97205b4"
       }
     },
-    "owner": "depression"
+    "owner": "depression",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c9146956-b140-4ef9-8487-af78d97205b4"
+    }
   }
 }
