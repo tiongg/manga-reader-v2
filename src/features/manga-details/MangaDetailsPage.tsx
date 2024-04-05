@@ -20,6 +20,7 @@ import MangaChaptersView from './components/MangaChaptersView';
 import MangaDescriptionView from './components/MangaDescriptionView';
 import MangaDetailView from './components/MangaDetailView';
 import MangaHeaderBar from './components/MangaHeaderBar';
+import MangaRelatedMangaView from './components/MangaRelatedMangaView';
 
 export type MangaDetailsPageProps = { mangaId: string };
 
@@ -30,17 +31,6 @@ export default function MangaDetailsPage({
     params: { mangaId },
   } = route;
   const inset = useSafeAreaInsets();
-
-  // const {
-  //   manga: { data: manga, isPending: isPendingManga },
-  //   chapters: { data: chapters, isPending: isPendingChapters },
-  // } = useGetMangaAndChapters(mangaId);
-
-  // const { data: readChapters, isPending: isPendingReadMarkers } =
-  //   useGetReadMarkers(mangaId);
-
-  // const { data: followStatus, isPending: isPendingFollowStatus } =
-  //   useGetFollowStatus(mangaId);
 
   const res = useQueries({
     queries: [
@@ -91,6 +81,7 @@ export default function MangaDetailsPage({
             />
             <MangaDescriptionView manga={manga} />
             <MangaAuthorDetail manga={manga} />
+            <MangaRelatedMangaView manga={manga} />
           </VStack>
         </ScrollView>
       </View>
