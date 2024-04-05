@@ -43,6 +43,7 @@ export default function MangaReaderPage({
     setFalse: hideOverlay,
   } = useBoolean();
   const flatListRef = useRef<FlatList>(null);
+  const { width: screenWidth } = Dimensions.get('window');
 
   //Pages indexed 0
   const [currentPage, setCurrentPage] = useState(0);
@@ -75,8 +76,7 @@ export default function MangaReaderPage({
   }, [pageUrls, setCurrentPage]);
 
   const calculateCurrentIndex = (currentX: number) => {
-    const deviceWidth = Dimensions.get('window').width;
-    const currentPage = Math.round(currentX / deviceWidth);
+    const currentPage = Math.round(currentX / screenWidth);
     return currentPage;
   };
 
@@ -105,7 +105,6 @@ export default function MangaReaderPage({
   const currentChapter = chapters[currentChapterIndex];
   const nextChapter = chapters[currentChapterIndex - 1];
   const prevChapter = chapters[currentChapterIndex + 1];
-  const { width: screenWidth } = Dimensions.get('window');
   const gap = theme.tokens.space['2'];
 
   return (

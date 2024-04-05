@@ -7,7 +7,6 @@ import {
   Image,
   Pressable,
   Text,
-  View,
   VStack,
 } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';

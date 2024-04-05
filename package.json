@@ -8,7 +8,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "generate-md-client": "npx openapi-ts"
+    "generate-md-client": "npx openapi-ts -i ./open-api-specs/mangadex-api.yaml -o ./mangadex-client --useOptions -c fetch",
+    "generate-jikan-client": "npx openapi-ts -i ./open-api-specs/jikan-api.json -o ./jikan-client --useOptions -c fetch"
   },
   "dependencies": {
     "@gluestack-style/react": "^1.0.52",
