@@ -32,6 +32,8 @@ export async function getChapters(mangaId: string, offset: number = 0) {
       volume: 'desc',
       chapter: 'desc',
     },
+    includeExternalUrl: 0,
+    includeEmptyPages: 0,
   });
   return mangaChapters.data;
 }
@@ -197,4 +199,70 @@ export async function unfollowManga(mangaId: string) {
     }),
   ]);
   return res.every((res) => res.result === 'ok');
+}
+
+/**
+ * Gets recommendations based on the manga
+ *
+ * Recommendations are sourced from AniList, then converted to MangaDex mangas
+ * @param aniListId - anilist id of the manga
+ */
+export async function getRecommendations(aniListId: number, limit = 5) {
+  const query = `
+    query media($id: Int, $type: MediaType, $limit: Int) {
+      Media(id: $id, type: $type) {
+        recommendations(perPage: $limit, sort: [RATING_DESC, ID]) {
+          nodes {
+            id
+            mediaRecommendation {
+              id
+              title {
+                userPreferred
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+  const variables = {
+    id: aniListId,
+    type: 'MANGA',
+    limit: limit,
+  };
+  //TODO: Type this
+  const aniListRec = await fetch('https://graphql.anilist.co', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+  }).then((res) => res.json() as any);
+
+  //🙏
+  const recommendationTitles: string[] = aniListRec.data['Media'][
+    'recommendations'
+  ]['nodes'].map(
+    (x: any) => x['mediaRecommendation']['title']['userPreferred']
+  );
+
+  //Recommendations should be limited to 5
+  const mangas = await Promise.all(
+    recommendationTitles.slice(0, limit).map((title: string) =>
+      MangaService.getSearchManga({
+        title,
+        limit: 1,
+        includesArray: ['cover_art'],
+        order: {
+          rating: 'desc',
+        },
+      }).then((res) => res.data?.[0])
+    )
+  ).then((res) => res.filter(Boolean));
+
+  return mangas;
 }
