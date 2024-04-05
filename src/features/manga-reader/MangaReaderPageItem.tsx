@@ -1,6 +1,7 @@
 import { memo, useEffect } from 'react';
 import { Dimensions, Pressable } from 'react-native';
-import { Box, Image, Spinner } from '@gluestack-ui/themed';
+import { Box, Spinner } from '@gluestack-ui/themed';
+import { Image } from 'expo-image';
 
 import { useBoolean } from '@/utils/use-boolean';
 
@@ -33,15 +34,16 @@ export function PageItem({ url, index, onPress }: PageProps) {
         </Box>
       )}
       <Image
-        key={url}
+        recyclingKey={url}
         source={url}
         alt={`Page ${index + 1}`}
-        resizeMode="contain"
-        margin="auto"
+        contentFit="contain"
         style={{
           height: '100%',
           width: Dimensions.get('window').width,
+          margin: 'auto',
         }}
+        cachePolicy="memory-disk"
         onLoadStart={startLoading}
         onLoadEnd={stopLoading}
       />

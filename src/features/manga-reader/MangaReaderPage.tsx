@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, FlatList } from 'react-native';
 import { Box, Text, Toast, ToastTitle, useToast } from '@gluestack-ui/themed';
 import { useQueries } from '@tanstack/react-query';
@@ -15,6 +15,7 @@ import {
   getChaptersQuery,
   getMangaQuery,
   getReadMarkersQuery,
+  prefetchChapterImages,
 } from '@/utils/query-options';
 import { markChapterAsRead } from '@/utils/service-calls';
 import { useBoolean } from '@/utils/use-boolean';
@@ -75,10 +76,23 @@ export default function MangaReaderPage({
     setCurrentPage(startAtPage.current);
   }, [pageUrls, setCurrentPage]);
 
-  const calculateCurrentIndex = (currentX: number) => {
-    const currentPage = Math.round(currentX / screenWidth);
-    return currentPage;
-  };
+  const { currentChapter, nextChapter, prevChapter } = useMemo(() => {
+    if (!chapters) return {};
+    const currentChapterIndex = chapters.findIndex(
+      (chapter) => chapter.id === chapterId
+    );
+    const currentChapter = chapters[currentChapterIndex];
+    const nextChapter = chapters[currentChapterIndex - 1];
+    const prevChapter = chapters[currentChapterIndex + 1];
+    if (nextChapter) {
+      prefetchChapterImages(nextChapter.id!);
+    }
+    return {
+      currentChapter,
+      nextChapter,
+      prevChapter,
+    };
+  }, [chapters, chapterId]);
 
   if (isFetchingPages || isMangaPending || isChaptersPending) {
     return <PageSpinner insetTop bgColor={colors.backgroundDark950} />;
@@ -92,19 +106,18 @@ export default function MangaReaderPage({
     );
   }
 
-  const currentChapterIndex = chapters.findIndex(
-    (chapter) => chapter.id === chapterId
-  );
-  if (currentChapterIndex === -1) {
+  if (!currentChapter) {
     return (
       <Box>
-        <Text>Something went wrong!</Text>
+        <Text>Chapter not found</Text>
       </Box>
     );
   }
-  const currentChapter = chapters[currentChapterIndex];
-  const nextChapter = chapters[currentChapterIndex - 1];
-  const prevChapter = chapters[currentChapterIndex + 1];
+
+  const calculateCurrentIndex = (currentX: number) => {
+    const currentPage = Math.round(currentX / screenWidth);
+    return currentPage;
+  };
   const gap = theme.tokens.space['2'];
 
   return (

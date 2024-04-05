@@ -4,7 +4,6 @@ import {
   Box,
   Divider,
   HStack,
-  Image,
   Pressable,
   Text,
   VStack,
@@ -12,6 +11,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
+import { Image } from 'expo-image';
 import { capitalize } from 'lodash';
 import { Chapter, Manga } from 'mangadex-client';
 import { match } from 'ts-pattern';
@@ -82,9 +82,10 @@ export default function MangaDetailView({
       <Box width="$full" marginTop="$3" display="flex" alignItems="center">
         <Image
           style={{ height: 180, width: '100%' }}
-          resizeMode="contain"
+          contentFit="contain"
           source={imageUrl}
           alt="cover art"
+          cachePolicy="memory-disk"
         />
       </Box>
       <Text

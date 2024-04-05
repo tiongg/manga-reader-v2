@@ -1,6 +1,7 @@
 import { memo } from 'react';
-import { Box, Image, Pressable, Text } from '@gluestack-ui/themed';
+import { Box, Pressable, Text } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
+import { Image } from 'expo-image';
 import { Chapter, Manga } from 'mangadex-client';
 
 import { colors } from '@/config/theme';
@@ -33,9 +34,12 @@ export function MangaUpdateItem({
         <Image
           source={coverArtUrl}
           alt={`${mangaTitle} cover`}
-          resizeMode="cover"
-          width={70}
-          height={100}
+          contentFit="cover"
+          style={{
+            width: 70,
+            height: 100,
+          }}
+          cachePolicy="memory-disk"
         />
         <Box flex={1}>
           <Text color={colors.textDark0} numberOfLines={2}>
