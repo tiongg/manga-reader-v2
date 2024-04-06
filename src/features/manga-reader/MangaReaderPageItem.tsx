@@ -1,8 +1,9 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { Dimensions, Pressable } from 'react-native';
-import { Box, Spinner } from '@gluestack-ui/themed';
+import { Center, Spinner } from '@gluestack-ui/themed';
 import { Image } from 'expo-image';
 
+import { colors } from '@/config/theme';
 import { useBoolean } from '@/utils/use-boolean';
 
 export type PageProps = {
@@ -24,14 +25,9 @@ export function PageItem({ url, index, onPress }: PageProps) {
   return (
     <Pressable onPress={onPress}>
       {isLoading && (
-        <Box
-          height="$full"
-          width="$full"
-          position="absolute"
-          justifyContent="center"
-        >
-          <Spinner color="$amber.100" />
-        </Box>
+        <Center height="$full" width="$full">
+          <Spinner color={colors.light100} />
+        </Center>
       )}
       <Image
         recyclingKey={url}
@@ -39,9 +35,9 @@ export function PageItem({ url, index, onPress }: PageProps) {
         alt={`Page ${index + 1}`}
         contentFit="contain"
         style={{
+          margin: 'auto',
           height: '100%',
           width: Dimensions.get('window').width,
-          margin: 'auto',
         }}
         cachePolicy="memory-disk"
         onLoadStart={startLoading}

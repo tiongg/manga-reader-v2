@@ -114,11 +114,12 @@ export default function MangaReaderPage({
     );
   }
 
+  const gap = theme.tokens.space['2'];
+
   const calculateCurrentIndex = (currentX: number) => {
-    const currentPage = Math.round(currentX / screenWidth);
+    const currentPage = Math.round(currentX / (screenWidth + gap));
     return currentPage;
   };
-  const gap = theme.tokens.space['2'];
 
   return (
     <>
@@ -189,7 +190,7 @@ export default function MangaReaderPage({
         onTouchMove={hideOverlay}
         getItemLayout={(data, index) => ({
           length: screenWidth + gap,
-          offset: screenWidth * index + index * gap,
+          offset: (screenWidth + gap) * index,
           index,
         })}
       />
