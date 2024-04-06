@@ -189,8 +189,8 @@ export default function MangaReaderPage({
         }}
         onTouchMove={hideOverlay}
         getItemLayout={(data, index) => ({
-          length: screenWidth + gap,
-          offset: (screenWidth + gap) * index,
+          length: screenWidth,
+          offset: (screenWidth + gap) * index - (index > 0 ? gap : 0),
           index,
         })}
       />
