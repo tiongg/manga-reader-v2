@@ -19,6 +19,7 @@ import {
 } from '@/utils/query-options';
 import { markChapterAsRead } from '@/utils/service-calls';
 import { useBoolean } from '@/utils/use-boolean';
+import { waitFor } from '@/utils/wait-for';
 import ChapterEdgeMarker from './MangaReaderChapterEdgeMarker';
 import EndOfManga from './MangaReaderEndOfManga';
 import MangaReaderOverlay from './MangaReaderOverlay';
@@ -65,6 +66,7 @@ export default function MangaReaderPage({
 
   //Scroll back to start when chapter changes
   const startAtPage = useRef(0);
+  const canGoNext = useRef(false);
   useEffect(() => {
     if (!flatListRef.current) return;
     if (!pageUrls) return;
@@ -74,6 +76,7 @@ export default function MangaReaderPage({
       animated: false,
     });
     setCurrentPage(startAtPage.current);
+    waitFor(500).then(() => (canGoNext.current = true));
   }, [pageUrls, setCurrentPage]);
 
   const { currentChapter, nextChapter, prevChapter } = useMemo(() => {
@@ -165,6 +168,9 @@ export default function MangaReaderPage({
         }}
         onEndReachedThreshold={0.1}
         onEndReached={() => {
+          if (!canGoNext.current) return;
+          canGoNext.current = false;
+
           //Load next chapter
           //Triggers on last_item
           markChapterAsRead(mangaId, chapterId);
