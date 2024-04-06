@@ -1,4 +1,5 @@
 //Contains wrapper for service calls
+import { Image } from 'expo-image';
 import _ from 'lodash';
 import {
   AtHomeService,
@@ -265,4 +266,18 @@ export async function getRecommendations(aniListId: number, limit = 5) {
   ).then((res) => res.filter(Boolean));
 
   return mangas;
+}
+
+export async function prefetchChapterImages(
+  chapterId: string,
+  dataSaver: boolean = false
+) {
+  console.log('[Experimental] Prefetching chapter images...');
+  const urls = await getChapterImageUrls(chapterId, dataSaver);
+  const res = await Image.prefetch(urls, 'memory-disk');
+  if (res) {
+    console.log('[Experimental] Prefetching complete!');
+  } else {
+    console.log('[Experimental] Prefetching failed!');
+  }
 }

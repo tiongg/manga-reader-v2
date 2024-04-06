@@ -3,7 +3,6 @@ import type {
   UseMutationOptions,
   UseQueryOptions,
 } from '@tanstack/react-query';
-import { Image } from 'expo-image';
 
 import { queryClient } from '@/config/query-client';
 import {
@@ -94,18 +93,4 @@ export function getUnfollowMangaMutation(mangaId: string) {
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: ['follow-status', mangaId] }),
   } satisfies UseMutationOptions;
-}
-
-export async function prefetchChapterImages(
-  chapterId: string,
-  dataSaver: boolean = false
-) {
-  console.log('[Experimental] Prefetching chapter images...');
-  const urls = await getChapterImageUrls(chapterId, dataSaver);
-  const res = await Image.prefetch(urls, 'memory-disk');
-  if (res) {
-    console.log('[Experimental] Prefetching complete!');
-  } else {
-    console.log('[Experimental] Prefetching failed!');
-  }
 }

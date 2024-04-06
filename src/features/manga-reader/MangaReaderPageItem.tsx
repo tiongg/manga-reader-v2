@@ -39,7 +39,8 @@ export function PageItem({ url, index, onPress }: PageProps) {
           height: '100%',
           width: Dimensions.get('window').width,
         }}
-        cachePolicy="memory-disk"
+        cachePolicy="none"
+        // cachePolicy="memory-disk"  //Casues memory leak
         onLoadStart={startLoading}
         onLoadEnd={stopLoading}
       />
