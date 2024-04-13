@@ -223,19 +223,25 @@ function TopOverlay({ manga, chapter, allChapters }: TopOverlayProps) {
       >
         <BlurView tint="dark" intensity={100}>
           <Box height={inset.top} />
-          <Pressable
+          <Box
             height={35}
             borderBottomWidth={1}
             borderBottomColor="$backgroundDark600"
             paddingHorizontal="$4"
-            onPress={() => {
-              navigation.goBack();
-            }}
+            justifyContent="space-between"
+            alignItems="center"
+            flexDirection="row"
           >
-            <Text color={colors.btn} fontWeight="400" fontSize="$md">
-              Close
-            </Text>
-          </Pressable>
+            <Pressable
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <Text color={colors.btn} fontWeight="400" fontSize="$md">
+                Close
+              </Text>
+            </Pressable>
+          </Box>
           <Box height={55} justifyContent="center" paddingHorizontal="$2.5">
             <Text
               color={colors.textDark0}
