@@ -6,6 +6,7 @@ import type {
 
 import { queryClient } from '@/config/query-client';
 import {
+  getAllDownloadedManga,
   getChapterImageUrlsCached,
   getMangaDetailsCached,
 } from './download-calls';
@@ -83,6 +84,18 @@ export function getFollowStatusQuery(mangaId: string) {
     queryFn: () => getMangaFollowStatus(mangaId),
   } satisfies UseQueryOptions;
 }
+
+export function getDownloadedMangaQuery() {
+  return {
+    queryKey: ['downloaded-manga'],
+    queryFn: () => getAllDownloadedManga(),
+    staleTime: ONE_HOUR,
+  } satisfies UseQueryOptions;
+}
+
+/*
+ * MUTATIONS
+ */
 
 export function getFollowMangaMutation(mangaId: string) {
   return {

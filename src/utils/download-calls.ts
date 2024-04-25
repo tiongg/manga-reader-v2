@@ -4,11 +4,13 @@ import * as fs from 'expo-file-system';
 import { Chapter, Manga } from 'mangadex-client';
 import throttledQueue from 'throttled-queue';
 
+import { queryClient } from '@/config/query-client';
 import {
   getChapterImageUrls,
   getChapters,
   getMangaDetails,
 } from './service-calls';
+import { waitFor } from './wait-for';
 
 // Consider cache directory instead
 //THIS ENDS WITH A TRAILING /
@@ -17,7 +19,7 @@ const LOG_CACHE = true;
 
 function log(...args: any[]) {
   if (!LOG_CACHE) return;
-  console.log('[Cache]', ...args);
+  console.log('[Downloads]', ...args);
 }
 
 /**
@@ -26,7 +28,9 @@ function log(...args: any[]) {
 export async function clearDownloads() {
   await fs.deleteAsync(DOWNLOAD_PREFIX);
   log('Downloads cleared');
-  await ensureDirectoryExist(getMangaDetailsPath('dummy'));
+  queryClient.invalidateQueries({
+    queryKey: ['downloaded-manga'],
+  });
 }
 
 /**
@@ -37,9 +41,8 @@ async function ensureDirectoryExist(path: string) {
   const dirPath = path.split('/').slice(0, -1).join('/');
   const { exists } = await fs.getInfoAsync(dirPath);
   if (exists) return;
-  await fs.makeDirectoryAsync(path, { intermediates: true });
+  await fs.makeDirectoryAsync(dirPath, { intermediates: true });
   log('Created directory', dirPath);
-  return ensureDirectoryExist(path);
 }
 
 //Manga details cache path
@@ -73,7 +76,7 @@ async function saveMangaDetails(manga: Manga, override: boolean = true) {
  */
 export async function getMangaDetailsCached(mangaId: string) {
   const cachePath = getMangaDetailsPath(mangaId);
-  const { exists, ...rest } = await fs.getInfoAsync(cachePath);
+  const { exists } = await fs.getInfoAsync(cachePath);
   if (exists) {
     log('Details cache hit', mangaId);
     const data = await fs.readAsStringAsync(cachePath);
@@ -114,19 +117,65 @@ export async function downloadChapter(manga: Manga, chapter: Chapter) {
   if (!manga.id || !chapter.id) {
     throw new Error('Manga and chapter must have ids');
   }
-  const chaptersDirectory = getChaptersDirectory(manga.id, chapter.id);
 
-  await saveMangaDetails(manga, false);
+  const chaptersDirectory = getChaptersDirectory(manga.id, chapter.id);
+  // await saveMangaDetails(manga, false);
 
   await fs.makeDirectoryAsync(chaptersDirectory, { intermediates: true });
-  const imageUrls = await getChapterImageUrls(chapter.id, false);
-  await Promise.all(
-    imageUrls.map((url, index) => {
-      const imgExtention = url.split('.').pop();
-      const path = `${chaptersDirectory}/${index}.${imgExtention}`;
-      return fs.downloadAsync(url, path);
-    })
-  );
+  const maxRetries = 30;
+  const done = new Set<number>();
+  for (let count = 0; count < maxRetries; count++) {
+    const startTime = Date.now();
+    const imageUrls = await getChapterImageUrls(chapter.id, false);
+    const dataSource = imageUrls[0].split('data')[0];
+    log(
+      `Downloading chapter ${chapter.attributes?.chapter}, from ${dataSource}`
+    );
+    log(`${imageUrls.length - done.size} images remaining...`);
+    const downloadHandles = imageUrls
+      .map((url, index) => {
+        if (done.has(index)) return;
+        const imgExtention = url.split('.').pop();
+        const path = `${chaptersDirectory}/${index}.${imgExtention}`;
+        return {
+          index,
+          handle: fs.createDownloadResumable(url, path, {}, (progress) => {
+            // log(
+            //   `Downloaded ${progress.totalBytesWritten} of ${progress.totalBytesExpectedToWrite} bytes`
+            // );
+          }),
+        };
+      })
+      .filter(Boolean);
+    const maxTimeout = 1000 * 5;
+    const timeout = setTimeout(async () => {
+      await Promise.all(
+        downloadHandles
+          .filter(({ index }) => !done.has(index))
+          .map(({ handle }) => handle.cancelAsync())
+      );
+      log('Timeout');
+    }, maxTimeout);
+
+    const res = await Promise.all(
+      downloadHandles.map(({ index, handle }) =>
+        handle.downloadAsync().then((res) => {
+          if (res) done.add(index);
+          return res;
+        })
+      )
+    );
+    clearTimeout(timeout);
+
+    if (res.every((res) => res)) {
+      log('Downloaded in ', Date.now() - startTime, 'ms');
+      log('Downloaded chapter', chapter.id);
+      break;
+    } else {
+      log('Failed in ', Date.now() - startTime, 'ms');
+      log('Retry count: ', count);
+    }
+  }
 }
 
 /**
@@ -134,7 +183,7 @@ export async function downloadChapter(manga: Manga, chapter: Chapter) {
  * @param mangaId - Id of manga to download
  */
 export async function downloadManga(mangaId: string) {
-  const throttle = throttledQueue(5, 1000, true); // at most 5 requests per second.
+  const throttle = throttledQueue(30, 60 * 1000, true); // 30 requests per minute
 
   const chapters = await getChapters(mangaId);
   if (!chapters) throw new Error('Failed to get chapters');
@@ -145,8 +194,36 @@ export async function downloadManga(mangaId: string) {
   await saveMangaDetails(manga);
   log('Manga details saved!');
 
-  await Promise.all(
-    chapters.map((chapter) => throttle(() => downloadChapter(manga, chapter)))
-  );
+  // await Promise.all(
+  //   chapters.map((chapter) => throttle(() => downloadChapter(manga, chapter)))
+  // ).catch((e) => {
+  //   log('Failed to download chapters', e);
+  // });
+
+  //Reverse so the most recent one is last
+  for (const chapter of chapters.reverse()) {
+    console.log('------------------------------------');
+    await throttle(() => downloadChapter(manga, chapter));
+  }
+
   log(`Downloaded ${chapters.length} chapters`);
+  return true;
+}
+
+/**
+ * Gets all downloaded manga
+ */
+export async function getAllDownloadedManga() {
+  //Comes with .json, remove it
+  const mangaDirectory = getMangaDetailsPath('').replace('.json', '');
+  const { exists } = await fs.getInfoAsync(mangaDirectory);
+  if (!exists) return [];
+  const pathToMangaDetails = await fs.readDirectoryAsync(mangaDirectory);
+  return await Promise.all(
+    pathToMangaDetails.map(async (fileName) => {
+      const path = `${mangaDirectory}/${fileName}`;
+      const rawData = await fs.readAsStringAsync(path);
+      return JSON.parse(rawData) as Manga;
+    })
+  );
 }

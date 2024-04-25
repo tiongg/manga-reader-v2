@@ -64,9 +64,11 @@ export default function MangaChaptersView({
 
   const { isLoading: isDownloadingManga, refetch: triggerDownloadManga } =
     useQuery({
-      queryKey: [],
+      queryKey: ['has-downloaded-manga', mangaId],
       queryFn: () => downloadManga(mangaId),
       enabled: false,
+      retry: false,
+      staleTime: 0,
     });
 
   return (
@@ -80,8 +82,7 @@ export default function MangaChaptersView({
         ) : (
           <Pressable
             onPress={() => {
-              downloadManga(mangaId);
-              // triggerDownloadManga();
+              triggerDownloadManga();
             }}
           >
             <Ionicons
