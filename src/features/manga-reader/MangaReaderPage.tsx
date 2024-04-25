@@ -61,7 +61,7 @@ export default function MangaReaderPage({
     queries: [
       getMangaQuery(mangaId),
       getChaptersQuery(mangaId),
-      getChapterImagesQuery(chapterId),
+      getChapterImagesQuery(chapterId, mangaId),
       getReadMarkersQuery(mangaId), //Ensure read markers are loaded into cache
     ],
   });

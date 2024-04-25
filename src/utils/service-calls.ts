@@ -24,6 +24,7 @@ export async function getMangaDetails(mangaId: string) {
 }
 
 export async function getChapters(mangaId: string, offset: number = 0) {
+  //TODO: Throttled queue to get all chapters
   const mangaChapters = await MangaService.getMangaIdFeed({
     id: mangaId,
     translatedLanguageArray: ['en'],

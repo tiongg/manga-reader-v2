@@ -6,6 +6,10 @@ import type {
 
 import { queryClient } from '@/config/query-client';
 import {
+  getChapterImageUrlsCached,
+  getMangaDetailsCached,
+} from './download-calls';
+import {
   followManga,
   getAllFollows,
   getAuthorMangas,
@@ -32,7 +36,7 @@ export function getChaptersQuery(mangaId: string) {
 export function getMangaQuery(mangaId: string) {
   return {
     queryKey: ['manga', mangaId],
-    queryFn: () => getMangaDetails(mangaId),
+    queryFn: () => getMangaDetailsCached(mangaId),
     staleTime: ONE_HOUR,
   } satisfies UseQueryOptions;
 }
@@ -47,11 +51,12 @@ export function getReadMarkersQuery(mangaId: string) {
 
 export function getChapterImagesQuery(
   chapterId: string,
+  mangaId: string,
   dataSaver: boolean = false
 ) {
   return {
     queryKey: ['chapter-images', chapterId, dataSaver],
-    queryFn: () => getChapterImageUrls(chapterId, dataSaver),
+    queryFn: () => getChapterImageUrlsCached(chapterId, mangaId, dataSaver),
     staleTime: ONE_HOUR,
   } satisfies UseQueryOptions;
 }

@@ -1,10 +1,13 @@
-import { Box, Pressable, Text, VStack } from '@gluestack-ui/themed';
+import { Ionicons } from '@expo/vector-icons';
+import { Box, Pressable, Spinner, Text, VStack } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
+import { useQuery } from '@tanstack/react-query';
 import { Chapter, Manga } from 'mangadex-client';
 import { match } from 'ts-pattern';
 
-import { colors } from '@/config/theme';
+import { colors, theme } from '@/config/theme';
 import { FromMain } from '@/types/navigation/nav-params';
+import { downloadManga } from '@/utils/download-calls';
 
 export type MangaChaptersViewProps = {
   chapters: Chapter[];
@@ -59,11 +62,36 @@ export default function MangaChaptersView({
   const navigation = useNavigation<FromMain>();
   const mangaId = manga.id!;
 
+  const { isLoading: isDownloadingManga, refetch: triggerDownloadManga } =
+    useQuery({
+      queryKey: [],
+      queryFn: () => downloadManga(mangaId),
+      enabled: false,
+    });
+
   return (
     <VStack rowGap="$4" backgroundColor={colors.backgroundDark900} padding="$4">
-      <Text color={colors.textDark0} fontSize="$lg" fontWeight="600">
-        Chapters
-      </Text>
+      <Box display="flex" justifyContent="space-between" flexDirection="row">
+        <Text color={colors.textDark0} fontSize="$lg" fontWeight="600">
+          Chapters
+        </Text>
+        {isDownloadingManga ? (
+          <Spinner />
+        ) : (
+          <Pressable
+            onPress={() => {
+              downloadManga(mangaId);
+              // triggerDownloadManga();
+            }}
+          >
+            <Ionicons
+              name="download-outline"
+              color={colors.textDark0}
+              size={theme.tokens.fontSizes['lg']}
+            />
+          </Pressable>
+        )}
+      </Box>
       <Box
         padding="$5"
         borderRadius="$md"

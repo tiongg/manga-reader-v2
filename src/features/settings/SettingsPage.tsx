@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors } from '@/config/theme';
 import { useMangadexAuth } from '@/providers/MangadexAuth.provider';
+import { clearDownloads } from '@/utils/download-calls';
 
 export default function SettingsPage() {
   const { logout } = useMangadexAuth();
@@ -24,6 +25,14 @@ export default function SettingsPage() {
         width="$48"
       >
         <Text>Logout</Text>
+      </Button>
+      <Button
+        onPress={() => {
+          clearDownloads();
+        }}
+        width="$48"
+      >
+        <Text>Clear downloads</Text>
       </Button>
     </View>
   );
