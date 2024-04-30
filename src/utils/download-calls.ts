@@ -115,8 +115,14 @@ export async function downloadChapter(
   const downloadedPages = new Set<number>();
   for (let count = 0; count < maxRetries; count++) {
     const startTime = Date.now();
-    const imageUrls = await getChapterImageUrls(chapter.id, false);
+    const imageUrls = await getChapterImageUrls(
+      chapter.id,
+      false,
+      //this node works very well
+      'https://cmdxd98sb0x3yprd.mangadex.network'
+    );
     const dataSource = imageUrls[0].split('data')[0];
+    let prevDownloadedCount = downloadedPages.size;
     log(
       `Downloading chapter ${chapter.attributes?.chapter}, from ${dataSource}`
     );
@@ -137,13 +143,20 @@ export async function downloadChapter(
       })
       .filter(Boolean);
     const maxTimeout = 1000 * 5;
-    const timeout = setTimeout(async () => {
-      await Promise.all(
-        downloadHandles
-          .filter(({ index }) => !downloadedPages.has(index))
-          .map(({ handle }) => handle.cancelAsync())
-      );
-      log('Timeout');
+    const timeout = setInterval(async () => {
+      const downloadedCount = downloadedPages.size;
+      //No progress this cycle
+      if (downloadedCount === prevDownloadedCount) {
+        await Promise.all(
+          downloadHandles
+            .filter(({ index }) => !downloadedPages.has(index))
+            .map(({ handle }) => handle.cancelAsync())
+        );
+        log('Timeout');
+      } else {
+        //Got progress, continue using this node
+        prevDownloadedCount = downloadedCount;
+      }
     }, maxTimeout);
 
     const res = await Promise.all(
@@ -154,7 +167,7 @@ export async function downloadChapter(
         })
       )
     );
-    clearTimeout(timeout);
+    clearInterval(timeout);
 
     if (res.every((res) => res)) {
       log('Downloaded in ', Date.now() - startTime, 'ms');
@@ -205,10 +218,11 @@ export async function downloadManga(mangaId: string) {
     }
   }
 
+  //Sort downloaded chapters
   const sortedDownloads = orderWithReference(
     downloadedChapterDetails,
     (c) => c.id!,
-    chapters.map((c) => c.id!)
+    chapters.reverse().map((c) => c.id!)
   );
 
   log(

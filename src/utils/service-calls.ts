@@ -99,16 +99,18 @@ export async function getReadChapterIds(mangaId: string) {
  * Gets urls for all pages in the chapter
  * @param chapterId - Chapter id to get image urls
  * @param dataSaver - Data saver mode enabled
+ * @param baseUrl - Base url for the chapter. Defaults to the chapter's base url
  * @returns Array of image urls, corresponding to the pages in the chapter
  */
 export async function getChapterImageUrls(
   chapterId: string,
-  dataSaver: boolean = false
+  dataSaver: boolean = false,
+  baseUrl?: string
 ) {
   const chapterData = await AtHomeService.getAtHomeServerChapterId({
     chapterId,
   });
-  const baseUrl = chapterData.baseUrl!;
+  baseUrl ??= chapterData.baseUrl!;
   const {
     dataSaver: dataSaverUrls,
     data: dataUrls,
