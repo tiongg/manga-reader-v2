@@ -32,6 +32,7 @@ type TopOverlayProps = {
   manga: Manga;
   chapter: Chapter;
   allChapters: Chapter[];
+  isDownloaded: boolean;
 };
 
 type BottomOverlayProps = {
@@ -44,6 +45,7 @@ type ChapterSelectDialogProps = {
   allChapters: Chapter[];
   mangaId: string;
   isOpen: boolean;
+  isDownloaded: boolean;
   onClose: () => void;
 };
 
@@ -116,9 +118,10 @@ const ChapterSelectItemMemo = memo(ChapterSelectItem);
 function ChapterSelectDialog({
   isOpen,
   onClose,
-  allChapters,
-  currentChapter,
   mangaId,
+  allChapters,
+  isDownloaded,
+  currentChapter,
 }: ChapterSelectDialogProps) {
   const navigation = useNavigation<FromMain>();
   const onChapterSelect = (chapter: Chapter) => {
@@ -126,11 +129,12 @@ function ChapterSelectDialog({
     navigation.navigate('MangaReader', {
       chapterId: chapter.id!,
       mangaId,
+      isDownloaded,
     });
   };
 
   const { data: readChapters, isPending: isPendingReadMarkers } = useQuery(
-    getReadMarkersQuery(mangaId)
+    getReadMarkersQuery(mangaId, isDownloaded)
   );
 
   //Shouldn't be happening
@@ -201,7 +205,12 @@ function ChapterSelectDialog({
   );
 }
 
-function TopOverlay({ manga, chapter, allChapters }: TopOverlayProps) {
+function TopOverlay({
+  manga,
+  chapter,
+  allChapters,
+  isDownloaded,
+}: TopOverlayProps) {
   const navigation = useNavigation<FromMain>();
   const inset = useSafeAreaInsets();
   const {
@@ -281,6 +290,7 @@ function TopOverlay({ manga, chapter, allChapters }: TopOverlayProps) {
         currentChapter={chapter}
         isOpen={isShowingChapterSelect}
         onClose={hideChapterSelect}
+        isDownloaded={isDownloaded}
       />
     </>
   );

@@ -1,20 +1,34 @@
-// Cached service calls
-// Returns the same data as the service call, but with cached data
+// Download service calls
 import * as fs from 'expo-file-system';
 import { Chapter, Manga } from 'mangadex-client';
 import throttledQueue from 'throttled-queue';
 
 import { queryClient } from '@/config/query-client';
+import { orderWithReference } from './order-with-reference';
 import {
   getChapterImageUrls,
-  getChapters,
+  getChapterList,
   getMangaDetails,
 } from './service-calls';
-import { waitFor } from './wait-for';
+
+/* FOLDER STRUCTURE
+documentDirectory/md-downloads/
+  manga/
+    mangaId.json  - Manga details for mangaId
+  chapter/
+    mangaId/  - Folder for mangaId
+      chapters.json - List of downlaoded chapters for mangaId
+      chapterId/  - Folder for chapterId
+        0.jpg|png
+        1.jpg|png
+        ...
+        n.jpg|png
+*/
 
 // Consider cache directory instead
 //THIS ENDS WITH A TRAILING /
 const DOWNLOAD_PREFIX = `${fs.documentDirectory}md-downloads`;
+const CHAPTER_DETAILS_JSON = 'chapters.json';
 const LOG_CACHE = true;
 
 function log(...args: any[]) {
@@ -45,7 +59,7 @@ async function ensureDirectoryExist(path: string) {
   log('Created directory', dirPath);
 }
 
-//Manga details cache path
+//Downloaded manga details path for mangaId
 function getMangaDetailsPath(mangaId: string) {
   return `${DOWNLOAD_PREFIX}/manga/${mangaId}.json`;
 }
@@ -53,6 +67,11 @@ function getMangaDetailsPath(mangaId: string) {
 //Folder containing downloaded chapter images
 function getChaptersDirectory(mangaId: string, chapterId: string) {
   return `${DOWNLOAD_PREFIX}/chapter/${mangaId}/${chapterId}`;
+}
+
+//Downloaded chapters path for mangaId
+function getDownloadedChaptersJsonPath(mangaId: string) {
+  return `${getChaptersDirectory(mangaId, '')}${CHAPTER_DETAILS_JSON}`;
 }
 
 /**
@@ -71,59 +90,29 @@ async function saveMangaDetails(manga: Manga, override: boolean = true) {
 }
 
 /**
- * Gets manga details. If downloaded, returns cached data instead.
- * @param mangaId - Manga to get
- */
-export async function getMangaDetailsCached(mangaId: string) {
-  const cachePath = getMangaDetailsPath(mangaId);
-  const { exists } = await fs.getInfoAsync(cachePath);
-  if (exists) {
-    log('Details cache hit', mangaId);
-    const data = await fs.readAsStringAsync(cachePath);
-    return JSON.parse(data) as Manga;
-  }
-  return await getMangaDetails(mangaId);
-}
-
-/**
- * Gets chapter image urls. If chapters are downloaded, returns cached data instead.
- * @param chapterId - Chapter to get images for
- * @param dataSaver - Data saver mode enabled
- * @returns string[] - Chapter image urls
- */
-export async function getChapterImageUrlsCached(
-  chapterId: string,
-  mangaId: string,
-  dataSaver: boolean = false
-) {
-  const chapterDirectory = getChaptersDirectory(mangaId, chapterId);
-  const { exists } = await fs.getInfoAsync(chapterDirectory);
-  if (exists) {
-    log('Chapters cache hit', chapterId);
-    const urls = (await fs.readDirectoryAsync(chapterDirectory))
-      .sort((a, b) => parseInt(a) - parseInt(b))
-      .map((url) => `${chapterDirectory}/${url}`);
-    return urls;
-  }
-  return getChapterImageUrls(chapterId, dataSaver);
-}
-
-/**
  * Downloads a chapter, along with manga details
  * @param manga - Manga chapter belongs to
  * @param chapter - Chapter to download
+ * @param checkDetails - true to check if manga details are already saved
+ * @returns boolean - true if download was successful
  */
-export async function downloadChapter(manga: Manga, chapter: Chapter) {
+export async function downloadChapter(
+  manga: Manga,
+  chapter: Chapter,
+  checkDetails: boolean
+) {
   if (!manga.id || !chapter.id) {
     throw new Error('Manga and chapter must have ids');
   }
 
   const chaptersDirectory = getChaptersDirectory(manga.id, chapter.id);
-  // await saveMangaDetails(manga, false);
+  if (checkDetails) {
+    await saveMangaDetails(manga, false);
+  }
 
   await fs.makeDirectoryAsync(chaptersDirectory, { intermediates: true });
   const maxRetries = 30;
-  const done = new Set<number>();
+  const downloadedPages = new Set<number>();
   for (let count = 0; count < maxRetries; count++) {
     const startTime = Date.now();
     const imageUrls = await getChapterImageUrls(chapter.id, false);
@@ -131,10 +120,10 @@ export async function downloadChapter(manga: Manga, chapter: Chapter) {
     log(
       `Downloading chapter ${chapter.attributes?.chapter}, from ${dataSource}`
     );
-    log(`${imageUrls.length - done.size} images remaining...`);
+    log(`${imageUrls.length - downloadedPages.size} images remaining...`);
     const downloadHandles = imageUrls
       .map((url, index) => {
-        if (done.has(index)) return;
+        if (downloadedPages.has(index)) return;
         const imgExtention = url.split('.').pop();
         const path = `${chaptersDirectory}/${index}.${imgExtention}`;
         return {
@@ -151,7 +140,7 @@ export async function downloadChapter(manga: Manga, chapter: Chapter) {
     const timeout = setTimeout(async () => {
       await Promise.all(
         downloadHandles
-          .filter(({ index }) => !done.has(index))
+          .filter(({ index }) => !downloadedPages.has(index))
           .map(({ handle }) => handle.cancelAsync())
       );
       log('Timeout');
@@ -160,7 +149,7 @@ export async function downloadChapter(manga: Manga, chapter: Chapter) {
     const res = await Promise.all(
       downloadHandles.map(({ index, handle }) =>
         handle.downloadAsync().then((res) => {
-          if (res) done.add(index);
+          if (res) downloadedPages.add(index);
           return res;
         })
       )
@@ -170,12 +159,13 @@ export async function downloadChapter(manga: Manga, chapter: Chapter) {
     if (res.every((res) => res)) {
       log('Downloaded in ', Date.now() - startTime, 'ms');
       log('Downloaded chapter', chapter.id);
-      break;
+      return true;
     } else {
       log('Failed in ', Date.now() - startTime, 'ms');
       log('Retry count: ', count);
     }
   }
+  return false;
 }
 
 /**
@@ -183,9 +173,9 @@ export async function downloadChapter(manga: Manga, chapter: Chapter) {
  * @param mangaId - Id of manga to download
  */
 export async function downloadManga(mangaId: string) {
-  const throttle = throttledQueue(30, 60 * 1000, true); // 30 requests per minute
+  const downloadThrottle = throttledQueue(30, 60 * 1000, true); // 30 requests per minute
 
-  const chapters = await getChapters(mangaId);
+  const chapters = await getChapterList(mangaId);
   if (!chapters) throw new Error('Failed to get chapters');
   const manga = await getMangaDetails(mangaId);
   if (!manga) throw new Error('Failed to get manga details');
@@ -194,19 +184,44 @@ export async function downloadManga(mangaId: string) {
   await saveMangaDetails(manga);
   log('Manga details saved!');
 
-  // await Promise.all(
-  //   chapters.map((chapter) => throttle(() => downloadChapter(manga, chapter)))
-  // ).catch((e) => {
-  //   log('Failed to download chapters', e);
-  // });
+  //Successfully downloaded chapters
+  const downloadedChapterDetails = await getDownloadedChapterList(mangaId);
+  const originalLength = downloadedChapterDetails.length;
 
   //Reverse so the most recent one is last
   for (const chapter of chapters.reverse()) {
+    //Skip if already downloaded
+    if (downloadedChapterDetails.some((c) => c.id === chapter.id)) {
+      continue;
+    }
+
     console.log('------------------------------------');
-    await throttle(() => downloadChapter(manga, chapter));
+    const success = await downloadThrottle(() =>
+      downloadChapter(manga, chapter, false)
+    );
+    //Add to downloaded list
+    if (success) {
+      downloadedChapterDetails.push(chapter);
+    }
   }
 
-  log(`Downloaded ${chapters.length} chapters`);
+  const sortedDownloads = orderWithReference(
+    downloadedChapterDetails,
+    (c) => c.id!,
+    chapters.map((c) => c.id!)
+  );
+
+  log(
+    `Downloaded ${downloadedChapterDetails.length - originalLength} chapters!`
+  );
+
+  //Save downloaded chapters list
+  const downloadedChaptersJsonPath = getDownloadedChaptersJsonPath(mangaId);
+  await ensureDirectoryExist(downloadedChaptersJsonPath);
+  await fs.writeAsStringAsync(
+    downloadedChaptersJsonPath,
+    JSON.stringify(sortedDownloads)
+  );
   return true;
 }
 
@@ -226,4 +241,59 @@ export async function getAllDownloadedManga() {
       return JSON.parse(rawData) as Manga;
     })
   );
+}
+
+/**
+ * Gets manga details for a downloaded manga
+ * @param mangaId - Manga to get details for
+ */
+export async function getDownloadedMangaDetails(mangaId: string) {
+  const mangaDetailsPath = getMangaDetailsPath(mangaId);
+  const { exists } = await fs.getInfoAsync(mangaDetailsPath);
+  if (!exists) return;
+  const rawData = await fs.readAsStringAsync(mangaDetailsPath);
+  return JSON.parse(rawData) as Manga;
+}
+
+/**
+ * Gets chapter image urls for a downloaded chapter
+ * @param chapterId - Chapter to get images for
+ * @param mangaId - Manga id of chapter
+ * @returns string[] - Chapter image urls
+ */
+export async function getDownloadedChapterImageUrls(
+  chapterId: string,
+  mangaId: string
+) {
+  log('Using downloaded chapter images');
+  const chapterDirectory = getChaptersDirectory(mangaId, chapterId);
+  const { exists } = await fs.getInfoAsync(chapterDirectory);
+  if (!exists) return [];
+  const urls = (await fs.readDirectoryAsync(chapterDirectory))
+    .sort((a, b) => parseInt(a) - parseInt(b))
+    .map((url) => `${chapterDirectory}/${url}`);
+  return urls;
+}
+
+/**
+ * Gets downloaded chapter list
+ * @param mangaId - Manga to get downloaded chapters for
+ */
+export async function getDownloadedChapterList(
+  mangaId: string
+): Promise<Chapter[]> {
+  const chapterListPath = getDownloadedChaptersJsonPath(mangaId);
+  const { exists } = await fs.getInfoAsync(chapterListPath);
+  if (!exists) return [];
+  const rawData = await fs.readAsStringAsync(chapterListPath);
+  return JSON.parse(rawData) as Chapter[];
+}
+
+/**
+ * Gets read markers for a downloaded manga
+ * @param mangaId - Manga to get read markers for
+ */
+export async function getDownloadedReadMarkers(mangaId: string) {
+  //TODO
+  return new Set<string>();
 }

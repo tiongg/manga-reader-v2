@@ -7,12 +7,13 @@ import { FromStack } from '@/types/navigation/nav-params';
 
 export type EndOfMangaProps = {
   mangaId: string;
+  isDownloaded: boolean;
 };
 
 /**
  * Shown after the last page, if there is no next chapter
  */
-export default function EndOfManga({ mangaId }: EndOfMangaProps) {
+export default function EndOfManga({ mangaId, isDownloaded }: EndOfMangaProps) {
   const navigation = useNavigation<FromStack<'MangaReader'>>();
 
   return (
@@ -37,7 +38,7 @@ export default function EndOfManga({ mangaId }: EndOfMangaProps) {
           onPress={() => {
             //Navigate instead of goBack
             //since they can come from chapter page/follows page
-            navigation.navigate('MangaDetails', { mangaId });
+            navigation.navigate('MangaDetails', { mangaId, isDownloaded });
           }}
         >
           <Text>Back to manga</Text>

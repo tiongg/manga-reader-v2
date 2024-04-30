@@ -7,15 +7,17 @@ import type {
 import { queryClient } from '@/config/query-client';
 import {
   getAllDownloadedManga,
-  getChapterImageUrlsCached,
-  getMangaDetailsCached,
+  getDownloadedChapterImageUrls,
+  getDownloadedChapterList,
+  getDownloadedMangaDetails,
+  getDownloadedReadMarkers,
 } from './download-calls';
 import {
   followManga,
   getAllFollows,
   getAuthorMangas,
   getChapterImageUrls,
-  getChapters,
+  getChapterList,
   getMangaDetails,
   getMangaFollowStatus,
   getReadChapterIds,
@@ -26,26 +28,35 @@ import {
 const ONE_MINUTE = 1000 * 60;
 const ONE_HOUR = ONE_MINUTE * 60;
 
-export function getChaptersQuery(mangaId: string) {
+export function getChaptersQuery(mangaId: string, useDownloaded: boolean) {
   return {
-    queryKey: ['chapters', mangaId],
-    queryFn: () => getChapters(mangaId),
+    queryKey: ['chapters', mangaId, useDownloaded],
+    queryFn: () =>
+      useDownloaded
+        ? getDownloadedChapterList(mangaId)
+        : getChapterList(mangaId),
     staleTime: ONE_MINUTE,
   } satisfies UseQueryOptions;
 }
 
-export function getMangaQuery(mangaId: string) {
+export function getMangaQuery(mangaId: string, useDownloaded: boolean) {
   return {
-    queryKey: ['manga', mangaId],
-    queryFn: () => getMangaDetailsCached(mangaId),
+    queryKey: ['manga', mangaId, useDownloaded],
+    queryFn: () =>
+      useDownloaded
+        ? getDownloadedMangaDetails(mangaId)
+        : getMangaDetails(mangaId),
     staleTime: ONE_HOUR,
   } satisfies UseQueryOptions;
 }
 
-export function getReadMarkersQuery(mangaId: string) {
+export function getReadMarkersQuery(mangaId: string, useDownloaded: boolean) {
   return {
-    queryKey: ['read-chapters', mangaId],
-    queryFn: () => getReadChapterIds(mangaId),
+    queryKey: ['read-chapters', mangaId, useDownloaded],
+    queryFn: () =>
+      useDownloaded
+        ? getDownloadedReadMarkers(mangaId)
+        : getReadChapterIds(mangaId),
     staleTime: ONE_HOUR,
   } satisfies UseQueryOptions;
 }
@@ -53,11 +64,15 @@ export function getReadMarkersQuery(mangaId: string) {
 export function getChapterImagesQuery(
   chapterId: string,
   mangaId: string,
+  useDownloaded: boolean,
   dataSaver: boolean = false
 ) {
   return {
-    queryKey: ['chapter-images', chapterId, dataSaver],
-    queryFn: () => getChapterImageUrlsCached(chapterId, mangaId, dataSaver),
+    queryKey: ['chapter-images', chapterId, dataSaver, useDownloaded],
+    queryFn: () =>
+      useDownloaded
+        ? getDownloadedChapterImageUrls(chapterId, mangaId)
+        : getChapterImageUrls(chapterId, dataSaver),
     staleTime: ONE_HOUR,
   } satisfies UseQueryOptions;
 }
@@ -78,10 +93,11 @@ export function getAllFollowsQuery() {
   } satisfies UseQueryOptions;
 }
 
-export function getFollowStatusQuery(mangaId: string) {
+export function getFollowStatusQuery(mangaId: string, useDownloaded: boolean) {
   return {
     queryKey: ['follow-status', mangaId],
-    queryFn: () => getMangaFollowStatus(mangaId),
+    //If downloaded, always return true
+    queryFn: () => (useDownloaded ? true : getMangaFollowStatus(mangaId)),
   } satisfies UseQueryOptions;
 }
 

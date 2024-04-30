@@ -14,7 +14,6 @@ import {
   getMangaQuery,
   getReadMarkersQuery,
 } from '@/utils/query-options';
-import { getMangaFollowStatus } from '@/utils/service-calls';
 import MangaAuthorDetail from './components/MangaAuthorDetail';
 import MangaChaptersView from './components/MangaChaptersView';
 import MangaDescriptionView from './components/MangaDescriptionView';
@@ -22,22 +21,22 @@ import MangaDetailView from './components/MangaDetailView';
 import MangaHeaderBar from './components/MangaHeaderBar';
 import MangaRelatedMangaView from './components/MangaRelatedMangaView';
 
-export type MangaDetailsPageProps = { mangaId: string };
+export type MangaDetailsPageProps = { mangaId: string; isDownloaded: boolean };
 
 export default function MangaDetailsPage({
   route,
 }: ScreenProps<'MangaDetails'>) {
   const {
-    params: { mangaId },
+    params: { mangaId, isDownloaded },
   } = route;
   const inset = useSafeAreaInsets();
 
   const res = useQueries({
     queries: [
-      getMangaQuery(mangaId),
-      getChaptersQuery(mangaId),
-      getReadMarkersQuery(mangaId),
-      getFollowStatusQuery(mangaId),
+      getMangaQuery(mangaId, isDownloaded),
+      getChaptersQuery(mangaId, isDownloaded),
+      getReadMarkersQuery(mangaId, isDownloaded),
+      getFollowStatusQuery(mangaId, isDownloaded),
     ],
   });
   const [
@@ -73,15 +72,21 @@ export default function MangaDetailsPage({
               chapters={chapters}
               lastReadChapter={lastReadChapter}
               isFollowing={followStatus}
+              isDownloaded={isDownloaded}
             />
             <MangaChaptersView
               manga={manga}
               chapters={chapters}
               lastReadChapter={lastReadChapter}
+              isDownloaded={isDownloaded}
             />
             <MangaDescriptionView manga={manga} />
-            <MangaAuthorDetail manga={manga} />
-            <MangaRelatedMangaView manga={manga} />
+            {!isDownloaded && (
+              <>
+                <MangaAuthorDetail manga={manga} />
+                <MangaRelatedMangaView manga={manga} />
+              </>
+            )}
           </VStack>
         </ScrollView>
       </View>

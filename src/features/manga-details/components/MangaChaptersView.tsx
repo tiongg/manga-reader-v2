@@ -12,15 +12,21 @@ import { downloadManga } from '@/utils/download-calls';
 export type MangaChaptersViewProps = {
   chapters: Chapter[];
   manga: Manga;
+  isDownloaded: boolean;
   lastReadChapter?: Chapter;
 };
 
 type LastReadChapterProps = {
   lastRead?: Chapter;
   mangaId: string;
+  isDownloaded: boolean;
 };
 
-function LastReadChapter({ lastRead, mangaId }: LastReadChapterProps) {
+function LastReadChapter({
+  lastRead,
+  mangaId,
+  isDownloaded,
+}: LastReadChapterProps) {
   const navigation = useNavigation<FromMain>();
 
   if (!lastRead) {
@@ -39,6 +45,7 @@ function LastReadChapter({ lastRead, mangaId }: LastReadChapterProps) {
         navigation.navigate('MangaReader', {
           mangaId: mangaId,
           chapterId: lastRead.id!,
+          isDownloaded: isDownloaded,
         });
       }}
     >
@@ -57,6 +64,7 @@ function LastReadChapter({ lastRead, mangaId }: LastReadChapterProps) {
 export default function MangaChaptersView({
   chapters,
   manga,
+  isDownloaded,
   lastReadChapter,
 }: MangaChaptersViewProps) {
   const navigation = useNavigation<FromMain>();
@@ -77,21 +85,22 @@ export default function MangaChaptersView({
         <Text color={colors.textDark0} fontSize="$lg" fontWeight="600">
           Chapters
         </Text>
-        {isDownloadingManga ? (
-          <Spinner />
-        ) : (
-          <Pressable
-            onPress={() => {
-              triggerDownloadManga();
-            }}
-          >
-            <Ionicons
-              name="download-outline"
-              color={colors.textDark0}
-              size={theme.tokens.fontSizes['lg']}
-            />
-          </Pressable>
-        )}
+        {!isDownloaded &&
+          (isDownloadingManga ? (
+            <Spinner />
+          ) : (
+            <Pressable
+              onPress={() => {
+                triggerDownloadManga();
+              }}
+            >
+              <Ionicons
+                name="download-outline"
+                color={colors.textDark0}
+                size={theme.tokens.fontSizes['lg']}
+              />
+            </Pressable>
+          ))}
       </Box>
       <Box
         padding="$5"
@@ -106,14 +115,20 @@ export default function MangaChaptersView({
         >
           Last read
         </Text>
-        <LastReadChapter lastRead={lastReadChapter} mangaId={mangaId} />
+        <LastReadChapter
+          lastRead={lastReadChapter}
+          mangaId={mangaId}
+          isDownloaded={isDownloaded}
+        />
       </Box>
       <Pressable
         alignItems="center"
         backgroundColor={colors.backgroundDark600}
         padding="$4"
         borderRadius="$md"
-        onPress={() => navigation.navigate('ChapterSelect', { mangaId })}
+        onPress={() =>
+          navigation.navigate('ChapterSelect', { mangaId, isDownloaded })
+        }
       >
         <Text color={colors.btn} fontSize="$md" fontWeight="600">
           View All {chapters.length} Chapters

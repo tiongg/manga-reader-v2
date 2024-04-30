@@ -23,7 +23,7 @@ export async function getMangaDetails(mangaId: string) {
   return manga.data;
 }
 
-export async function getChapters(mangaId: string, offset: number = 0) {
+export async function getChapterList(mangaId: string, offset: number = 0) {
   //TODO: Throttled queue to get all chapters
   const mangaChapters = await MangaService.getMangaIdFeed({
     id: mangaId,

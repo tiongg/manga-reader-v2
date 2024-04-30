@@ -5,9 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import PageSpinner from '@/components/PageSpinner';
 import { theme } from '@/config/theme';
 import { getDownloadedMangaQuery } from '@/utils/query-options';
-import FollowMangaMemo from '../follows/FollowMangaItem';
-
-const DownloadMangaMemo = FollowMangaMemo;
+import DownloadMangaMemo from './DownloadMangaItem';
 
 export default function DownloadsPage() {
   const { data: downloadedManga, isPending: isPendingDownloadedManga } =

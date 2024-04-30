@@ -25,7 +25,10 @@ export function MangaUpdateItem({
   return (
     <Pressable
       onPress={() => {
-        navigate.navigate('MangaDetails', { mangaId: manga.id! });
+        navigate.navigate('MangaDetails', {
+          mangaId: manga.id!,
+          isDownloaded: false,
+        });
       }}
       paddingHorizontal="$4"
       flex={1}
