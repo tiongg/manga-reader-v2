@@ -3,7 +3,6 @@ import * as fs from 'expo-file-system';
 import { Chapter, Manga } from 'mangadex-client';
 import throttledQueue from 'throttled-queue';
 
-import { queryClient } from '@/config/query-client';
 import { orderWithReference } from './order-with-reference';
 import {
   getChapterImageUrls,
@@ -34,17 +33,6 @@ const LOG_CACHE = true;
 function log(...args: any[]) {
   if (!LOG_CACHE) return;
   console.log('[Downloads]', ...args);
-}
-
-/**
- * Clears downloads directory
- */
-export async function clearDownloads() {
-  await fs.deleteAsync(DOWNLOAD_PREFIX);
-  log('Downloads cleared');
-  queryClient.invalidateQueries({
-    queryKey: ['downloaded-manga'],
-  });
 }
 
 /**
@@ -284,7 +272,6 @@ export async function getDownloadedChapterImageUrls(
   chapterId: string,
   mangaId: string
 ) {
-  log('Using downloaded chapter images');
   const chapterDirectory = getChaptersDirectory(mangaId, chapterId);
   const { exists } = await fs.getInfoAsync(chapterDirectory);
   if (!exists) return [];
@@ -315,4 +302,24 @@ export async function getDownloadedChapterList(
 export async function getDownloadedReadMarkers(mangaId: string) {
   //TODO
   return new Set<string>();
+}
+
+/**
+ * Clears ALL downloads in downloads directory
+ */
+export async function clearDownloads() {
+  await fs.deleteAsync(DOWNLOAD_PREFIX);
+  log('Downloads cleared');
+}
+
+/**
+ * Deletes a single downloaded manga in downloads directory
+ * @param mangaId - Manga to delete
+ */
+export async function deleteDownloadedManga(mangaId: string) {
+  const mangaDetailsPath = getMangaDetailsPath(mangaId);
+  await fs.deleteAsync(mangaDetailsPath);
+  const chapterDirectory = getChaptersDirectory(mangaId, '');
+  await fs.deleteAsync(chapterDirectory);
+  log('Deleted downloaded manga', mangaId);
 }

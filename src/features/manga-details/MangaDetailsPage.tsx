@@ -64,8 +64,8 @@ export default function MangaDetailsPage({
         flex={1}
         backgroundColor={colors.backgroundDark900}
       >
-        <MangaHeaderBar manga={manga} />
-        <ScrollView>
+        <MangaHeaderBar manga={manga} isDownloaded={isDownloaded} />
+        <ScrollView showsVerticalScrollIndicator={false}>
           <VStack flex={1} backgroundColor={colors.backgroundDark950} gap="$4">
             <MangaDetailView
               manga={manga}

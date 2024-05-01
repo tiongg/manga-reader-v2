@@ -1,6 +1,8 @@
 import { Button, Text, View } from '@gluestack-ui/themed';
+import { useMutation } from '@tanstack/react-query';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { queryClient } from '@/config/query-client';
 import { colors } from '@/config/theme';
 import { useMangadexAuth } from '@/providers/MangadexAuth.provider';
 import { clearDownloads } from '@/utils/download-calls';
@@ -8,6 +10,15 @@ import { clearDownloads } from '@/utils/download-calls';
 export default function SettingsPage() {
   const { logout } = useMangadexAuth();
   const insets = useSafeAreaInsets();
+
+  const { mutateAsync: triggerClearDownloads } = useMutation({
+    mutationFn: async () => clearDownloads(),
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['downloaded-manga'],
+      });
+    },
+  });
 
   return (
     <View
@@ -28,7 +39,7 @@ export default function SettingsPage() {
       </Button>
       <Button
         onPress={() => {
-          clearDownloads();
+          triggerClearDownloads();
         }}
         width="$48"
       >

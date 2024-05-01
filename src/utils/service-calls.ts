@@ -54,6 +54,8 @@ export async function getFeedWithManga(offset: number = 0) {
       readableAt: 'desc',
     },
     includesArray: ['manga'],
+    includeEmptyPages: 0,
+    includeExternalUrl: 0,
   });
   const feedIds = (feed.data ?? []).map(
     (chapter) => getRelationship(chapter, 'manga').id!

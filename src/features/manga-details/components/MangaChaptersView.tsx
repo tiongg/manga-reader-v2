@@ -143,7 +143,7 @@ export default function MangaChaptersView({
         }
       >
         <Text color={colors.btn} fontSize="$md" fontWeight="600">
-          View All {chapters.length} Chapters
+          View All {chapters.length} {isDownloaded && 'Downloaded '}Chapters
         </Text>
       </Pressable>
     </VStack>
