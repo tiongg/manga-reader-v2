@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Box, Pressable, Spinner, Text, VStack } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Chapter, Manga } from 'mangadex-client';
 import { match } from 'ts-pattern';
 
+import { queryClient } from '@/config/query-client';
 import { colors, theme } from '@/config/theme';
 import { FromMain } from '@/types/navigation/nav-params';
 import { downloadManga } from '@/utils/download-calls';
@@ -70,13 +72,23 @@ export default function MangaChaptersView({
   const navigation = useNavigation<FromMain>();
   const mangaId = manga.id!;
 
-  const { isLoading: isDownloadingManga, refetch: triggerDownloadManga } =
-    useQuery({
-      queryKey: ['has-downloaded-manga', mangaId],
-      queryFn: () => downloadManga(mangaId),
-      enabled: false,
-      retry: false,
-      staleTime: 0,
+  const [currentChapterDownloading, setCurrentChapterDownloading] =
+    useState('');
+  const [currentChapterDownloadProgress, setCurrentChapterDownloadProgress] =
+    useState(0);
+
+  const { mutateAsync: triggerDownloadManga, isPending: isDownloadingManga } =
+    useMutation({
+      mutationFn: () =>
+        downloadManga(mangaId, (chapterId, current, outOf) => {
+          setCurrentChapterDownloading(chapterId);
+          setCurrentChapterDownloadProgress((current / outOf) * 100);
+        }),
+      onSettled: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['downloaded-manga'],
+        });
+      },
     });
 
   return (

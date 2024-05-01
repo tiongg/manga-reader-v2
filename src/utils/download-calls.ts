@@ -90,25 +90,21 @@ async function saveMangaDetails(manga: Manga, override: boolean = true) {
 }
 
 /**
- * Downloads a chapter, along with manga details
+ * Downloads a chapter
  * @param manga - Manga chapter belongs to
  * @param chapter - Chapter to download
- * @param checkDetails - true to check if manga details are already saved
  * @returns boolean - true if download was successful
  */
-export async function downloadChapter(
+async function downloadChapter(
   manga: Manga,
   chapter: Chapter,
-  checkDetails: boolean
+  onDownloadProgress: (current: number, outOf: number) => void
 ) {
   if (!manga.id || !chapter.id) {
     throw new Error('Manga and chapter must have ids');
   }
 
   const chaptersDirectory = getChaptersDirectory(manga.id, chapter.id);
-  if (checkDetails) {
-    await saveMangaDetails(manga, false);
-  }
 
   await fs.makeDirectoryAsync(chaptersDirectory, { intermediates: true });
   const maxRetries = 30;
@@ -134,11 +130,7 @@ export async function downloadChapter(
         const path = `${chaptersDirectory}/${index}.${imgExtention}`;
         return {
           index,
-          handle: fs.createDownloadResumable(url, path, {}, (progress) => {
-            // log(
-            //   `Downloaded ${progress.totalBytesWritten} of ${progress.totalBytesExpectedToWrite} bytes`
-            // );
-          }),
+          handle: fs.createDownloadResumable(url, path),
         };
       })
       .filter(Boolean);
@@ -159,10 +151,14 @@ export async function downloadChapter(
       }
     }, maxTimeout);
 
+    onDownloadProgress(downloadedPages.size, imageUrls.length);
     const res = await Promise.all(
       downloadHandles.map(({ index, handle }) =>
         handle.downloadAsync().then((res) => {
-          if (res) downloadedPages.add(index);
+          if (res) {
+            downloadedPages.add(index);
+            onDownloadProgress(downloadedPages.size, imageUrls.length);
+          }
           return res;
         })
       )
@@ -185,7 +181,14 @@ export async function downloadChapter(
  * Downloads all chapters of a manga
  * @param mangaId - Id of manga to download
  */
-export async function downloadManga(mangaId: string) {
+export async function downloadManga(
+  mangaId: string,
+  onDownloadProgress: (
+    chapterId: string,
+    current: number,
+    outOf: number
+  ) => void = () => {}
+) {
   const downloadThrottle = throttledQueue(30, 60 * 1000, true); // 30 requests per minute
 
   const chapters = await getChapterList(mangaId);
@@ -210,7 +213,9 @@ export async function downloadManga(mangaId: string) {
 
     console.log('------------------------------------');
     const success = await downloadThrottle(() =>
-      downloadChapter(manga, chapter, false)
+      downloadChapter(manga, chapter, (current, outOf) => {
+        onDownloadProgress(chapter.id!, current, outOf);
+      })
     );
     //Add to downloaded list
     if (success) {
