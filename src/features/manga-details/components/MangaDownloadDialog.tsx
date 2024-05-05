@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -20,7 +20,6 @@ import { colors } from '@/config/theme';
 import { downloadMangaChapters } from '@/utils/download-calls';
 import { getChapterTitle } from '@/utils/get-chapter-title';
 import { getChaptersQuery } from '@/utils/query-options';
-import { useBoolean } from '@/utils/use-boolean';
 
 export type MangaDownloadDialogProps = {
   chapters: Chapter[];
@@ -36,9 +35,11 @@ export default function MangaDownloadDialog({
   const [downloadProgress, updateDownloadProgress] = useImmer<
     Record<string, number>
   >({});
+  const [selectedChapterIds, updateSelectedChapterIds] = useImmer<Set<string>>(
+    new Set()
+  );
 
   const mangaId = manga.id!;
-  const selectedChapterIds = new Set<string>();
 
   const { mutateAsync: triggerDownloadManga, isPending: isDownloadingManga } =
     useMutation({
@@ -71,7 +72,17 @@ export default function MangaDownloadDialog({
 
   const resetDownloadStates = () => {
     updateDownloadProgress(() => ({}));
-    selectedChapterIds.clear();
+    updateSelectedChapterIds((curr) => curr.clear());
+  };
+
+  const selectAllChapters = () => {
+    for (const chapter of chapters) {
+      const chapterId = chapter.id!;
+      if (downloadedChapterIds.has(chapterId)) continue;
+      updateSelectedChapterIds((selectedChapterIds) => {
+        selectedChapterIds.add(chapterId);
+      });
+    }
   };
 
   return (
@@ -88,7 +99,7 @@ export default function MangaDownloadDialog({
         >
           Download Chapters
         </Text>
-        <Pressable onPress={() => {}}>
+        <Pressable onPress={() => selectAllChapters()}>
           <Ionicons name="checkmark-done" color={colors.textDark0} size={20} />
         </Pressable>
       </AlertDialogHeader>
@@ -100,13 +111,16 @@ export default function MangaDownloadDialog({
         renderItem={({ item }) => (
           <DownloadChapterSelectItemMemo
             chapter={item}
+            isSelected={selectedChapterIds.has(item.id!)}
             onSelected={(chapter) => {
               const chapterId = chapter.id!;
-              if (selectedChapterIds.has(chapterId)) {
-                selectedChapterIds.delete(chapterId);
-              } else {
-                selectedChapterIds.add(chapterId);
-              }
+              updateSelectedChapterIds((selectedChapterIds) => {
+                if (selectedChapterIds.has(chapterId)) {
+                  selectedChapterIds.delete(chapterId);
+                } else {
+                  selectedChapterIds.add(chapterId);
+                }
+              });
             }}
             downloadProgress={downloadProgress[item.id!] ?? 0}
             isDownloaded={downloadedChapterIds.has(item.id!)}
@@ -137,17 +151,18 @@ export default function MangaDownloadDialog({
 
 function DownloadChapterSelectItem({
   chapter,
+  isSelected,
   onSelected,
   downloadProgress,
   isDownloaded,
 }: {
   chapter: Chapter;
+  isSelected: boolean;
   onSelected: (chapter: Chapter) => void;
   downloadProgress: number;
   isDownloaded: boolean;
 }) {
   const chapterTitle = getChapterTitle(chapter);
-  const { value: isSelected, toggle: toggleSelected } = useBoolean();
 
   return (
     <Pressable
@@ -157,24 +172,22 @@ function DownloadChapterSelectItem({
       borderBottomWidth={1}
       disabled={isDownloaded}
       onPress={() => {
-        toggleSelected();
         onSelected(chapter);
       }}
     >
       <HStack gap="$1">
-        {isSelected && !isDownloaded && (
-          <Ionicons
-            name="checkmark-outline"
-            style={{
-              marginVertical: 'auto',
-              color: colors.btn,
-              alignSelf: 'center',
-            }}
-          />
-        )}
+        <Ionicons
+          name="checkmark-outline"
+          style={{
+            marginVertical: 'auto',
+            color: isSelected && !isDownloaded ? colors.btn : 'transparent',
+            alignSelf: 'center',
+          }}
+        />
         <Text
           numberOfLines={1}
           color={isDownloaded ? colors.textDark500 : colors.textDark100}
+          flex={1}
         >
           {chapterTitle}
         </Text>

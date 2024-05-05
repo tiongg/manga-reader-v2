@@ -3,11 +3,12 @@ import { Ionicons } from '@expo/vector-icons';
 import {
   AlertDialog,
   AlertDialogContent,
-  AlertDialogFooter,
   Box,
+  Button,
+  ButtonText,
+  HStack,
   Pressable,
   Text,
-  VStack,
 } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
@@ -84,12 +85,14 @@ export default function MangaHeaderBar({
             <AlertDialogContent
               backgroundColor="$backgroundDark700"
               padding="$4"
+              rowGap="$4"
             >
-              <Text color={colors.textDark0}>
+              <Text color={colors.textDark0} textAlign="center">
                 Are you sure you want to delete {mangaTitle}?
               </Text>
-              <AlertDialogFooter>
-                <Pressable
+              <HStack gap="$4">
+                <Button
+                  action="negative"
                   flex={1}
                   onPress={async () => {
                     await triggerDeleteManga();
@@ -97,16 +100,12 @@ export default function MangaHeaderBar({
                     navigation.goBack();
                   }}
                 >
-                  <Text textAlign="center" color={colors.btn}>
-                    Yes
-                  </Text>
-                </Pressable>
-                <Pressable flex={1} onPress={closeDialog}>
-                  <Text textAlign="center" color={colors.btn}>
-                    No
-                  </Text>
-                </Pressable>
-              </AlertDialogFooter>
+                  <ButtonText>Yes</ButtonText>
+                </Button>
+                <Button flex={1} onPress={closeDialog}>
+                  <ButtonText>No</ButtonText>
+                </Button>
+              </HStack>
             </AlertDialogContent>
           </AlertDialog>
         </>

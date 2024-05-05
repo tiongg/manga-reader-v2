@@ -3,12 +3,10 @@ import { FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
   AlertDialog,
-  AlertDialogBody,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
   Box,
-  Center,
   HStack,
   Pressable,
   Spinner,
