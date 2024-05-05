@@ -7,6 +7,7 @@ import {
   Box,
   Pressable,
   Text,
+  VStack,
 } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
@@ -82,9 +83,11 @@ export default function MangaHeaderBar({
           <AlertDialog isOpen={isDialogOpen} onClose={closeDialog}>
             <AlertDialogContent
               backgroundColor="$backgroundDark700"
-              padding="$2"
+              padding="$4"
             >
-              <Text>Are you sure you want to delete {mangaTitle}?</Text>
+              <Text color={colors.textDark0}>
+                Are you sure you want to delete {mangaTitle}?
+              </Text>
               <AlertDialogFooter>
                 <Pressable
                   flex={1}

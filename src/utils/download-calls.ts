@@ -169,8 +169,9 @@ async function downloadChapter(
  * Downloads all chapters of a manga
  * @param mangaId - Id of manga to download
  */
-export async function downloadManga(
+export async function downloadMangaChapters(
   mangaId: string,
+  chapterIds: Set<string>,
   onDownloadProgress: (
     chapterId: string,
     current: number,
@@ -196,6 +197,10 @@ export async function downloadManga(
   for (const chapter of chapters.reverse()) {
     //Skip if already downloaded
     if (downloadedChapterDetails.some((c) => c.id === chapter.id)) {
+      continue;
+    }
+    //Skip if not in selected chapters
+    if (!chapterIds.has(chapter.id!)) {
       continue;
     }
 

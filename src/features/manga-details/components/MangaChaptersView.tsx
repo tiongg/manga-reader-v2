@@ -1,15 +1,19 @@
-import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { Box, Pressable, Spinner, Text, VStack } from '@gluestack-ui/themed';
+import {
+  AlertDialog,
+  Box,
+  Pressable,
+  Text,
+  VStack,
+} from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
-import { useMutation, useQuery } from '@tanstack/react-query';
 import { Chapter, Manga } from 'mangadex-client';
 import { match } from 'ts-pattern';
 
-import { queryClient } from '@/config/query-client';
 import { colors, theme } from '@/config/theme';
 import { FromMain } from '@/types/navigation/nav-params';
-import { downloadManga } from '@/utils/download-calls';
+import { useBoolean } from '@/utils/use-boolean';
+import MangaDownloadDialog from './MangaDownloadDialog';
 
 export type MangaChaptersViewProps = {
   chapters: Chapter[];
@@ -71,25 +75,11 @@ export default function MangaChaptersView({
 }: MangaChaptersViewProps) {
   const navigation = useNavigation<FromMain>();
   const mangaId = manga.id!;
-
-  const [currentChapterDownloading, setCurrentChapterDownloading] =
-    useState('');
-  const [currentChapterDownloadProgress, setCurrentChapterDownloadProgress] =
-    useState(0);
-
-  const { mutateAsync: triggerDownloadManga, isPending: isDownloadingManga } =
-    useMutation({
-      mutationFn: () =>
-        downloadManga(mangaId, (chapterId, current, outOf) => {
-          setCurrentChapterDownloading(chapterId);
-          setCurrentChapterDownloadProgress((current / outOf) * 100);
-        }),
-      onSettled: () => {
-        queryClient.invalidateQueries({
-          queryKey: ['downloaded-manga'],
-        });
-      },
-    });
+  const {
+    value: isShowingDownloadDialog,
+    setTrue: showDownloadDialog,
+    setFalse: hideDownloadDialog,
+  } = useBoolean();
 
   return (
     <VStack rowGap="$4" backgroundColor={colors.backgroundDark900} padding="$4">
@@ -97,22 +87,24 @@ export default function MangaChaptersView({
         <Text color={colors.textDark0} fontSize="$lg" fontWeight="600">
           Chapters
         </Text>
-        {!isDownloaded &&
-          (isDownloadingManga ? (
-            <Spinner />
-          ) : (
-            <Pressable
-              onPress={() => {
-                triggerDownloadManga();
-              }}
-            >
+        {!isDownloaded && (
+          <>
+            <Pressable onPress={showDownloadDialog}>
               <Ionicons
                 name="download-outline"
                 color={colors.textDark0}
                 size={theme.tokens.fontSizes['lg']}
               />
             </Pressable>
-          ))}
+            <AlertDialog isOpen={isShowingDownloadDialog}>
+              <MangaDownloadDialog
+                chapters={chapters}
+                manga={manga}
+                hideDownloadDialog={hideDownloadDialog}
+              />
+            </AlertDialog>
+          </>
+        )}
       </Box>
       <Box
         padding="$5"
