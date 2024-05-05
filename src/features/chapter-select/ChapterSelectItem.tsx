@@ -10,12 +10,14 @@ export type ChapterSelectItemProps = {
   chapter: Chapter;
   manga: Manga;
   isRead: boolean;
+  isDownloaded: boolean;
 };
 
 export function ChapterSelectItem({
   chapter,
   manga,
   isRead,
+  isDownloaded,
 }: ChapterSelectItemProps) {
   const text = getChapterTitle(chapter);
   const navigation = useNavigation<FromMain>();
@@ -30,6 +32,7 @@ export function ChapterSelectItem({
         navigation.navigate('MangaReader', {
           mangaId: manga.id!,
           chapterId: chapter.id!,
+          isDownloaded,
         });
       }}
     >

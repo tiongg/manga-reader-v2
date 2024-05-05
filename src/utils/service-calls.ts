@@ -23,7 +23,8 @@ export async function getMangaDetails(mangaId: string) {
   return manga.data;
 }
 
-export async function getChapters(mangaId: string, offset: number = 0) {
+export async function getChapterList(mangaId: string, offset: number = 0) {
+  //TODO: Throttled queue to get all chapters
   const mangaChapters = await MangaService.getMangaIdFeed({
     id: mangaId,
     translatedLanguageArray: ['en'],
@@ -53,6 +54,8 @@ export async function getFeedWithManga(offset: number = 0) {
       readableAt: 'desc',
     },
     includesArray: ['manga'],
+    includeEmptyPages: 0,
+    includeExternalUrl: 0,
   });
   const feedIds = (feed.data ?? []).map(
     (chapter) => getRelationship(chapter, 'manga').id!
@@ -98,16 +101,18 @@ export async function getReadChapterIds(mangaId: string) {
  * Gets urls for all pages in the chapter
  * @param chapterId - Chapter id to get image urls
  * @param dataSaver - Data saver mode enabled
+ * @param baseUrl - Base url for the chapter. Defaults to the chapter's base url
  * @returns Array of image urls, corresponding to the pages in the chapter
  */
 export async function getChapterImageUrls(
   chapterId: string,
-  dataSaver: boolean = false
+  dataSaver: boolean = false,
+  baseUrl?: string
 ) {
   const chapterData = await AtHomeService.getAtHomeServerChapterId({
     chapterId,
   });
-  const baseUrl = chapterData.baseUrl!;
+  baseUrl ??= chapterData.baseUrl!;
   const {
     dataSaver: dataSaverUrls,
     data: dataUrls,

@@ -33,7 +33,11 @@ function RelatedMangaItem({ manga }: { manga: Manga }) {
     <Pressable
       width="$24"
       onPress={() => {
-        navigation.push('MangaDetails', { mangaId: manga.id! });
+        navigation.push('MangaDetails', {
+          mangaId: manga.id!,
+          //Download flow doesn't have author stuff
+          isDownloaded: false,
+        });
       }}
     >
       <Image

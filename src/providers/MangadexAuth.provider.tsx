@@ -33,15 +33,14 @@ type SavedSessionData = {
   refreshedAt: number;
 };
 
-const SESSION_SAVE = `${fs.documentDirectory}/session.json`;
+const SESSION_SAVE = `${fs.documentDirectory}session.json`;
 async function updateSessionData(data: RefreshResponse | LoginResponse) {
-  const filePath = fs.documentDirectory + 'session.json';
   const sessionData = {
     session: data.token?.session,
     refresh: data.token?.refresh,
     refreshedAt: Date.now(),
   } as SavedSessionData;
-  await fs.writeAsStringAsync(filePath, JSON.stringify(sessionData));
+  await fs.writeAsStringAsync(SESSION_SAVE, JSON.stringify(sessionData));
   return sessionData;
 }
 

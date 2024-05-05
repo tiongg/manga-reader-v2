@@ -21,7 +21,6 @@ import {
   prefetchChapterImages,
 } from '@/utils/service-calls';
 import { useBoolean } from '@/utils/use-boolean';
-import { waitFor } from '@/utils/wait-for';
 import ChapterEdgeMarker from './MangaReaderChapterEdgeMarker';
 import EndOfManga from './MangaReaderEndOfManga';
 import MangaReaderOverlay from './MangaReaderOverlay';
@@ -30,6 +29,7 @@ import PageItemMemo from './MangaReaderPageItem';
 export type MangaReaderPageProps = {
   mangaId: string;
   chapterId: string;
+  isDownloaded: boolean;
 };
 
 export default function MangaReaderPage({
@@ -37,7 +37,7 @@ export default function MangaReaderPage({
   navigation,
 }: ScreenProps<'MangaReader'>) {
   const {
-    params: { chapterId, mangaId },
+    params: { chapterId, mangaId, isDownloaded },
   } = route;
   const inset = useSafeAreaInsets();
   const toast = useToast();
@@ -59,10 +59,10 @@ export default function MangaReaderPage({
     { data: pageUrls, isFetching: isFetchingPages },
   ] = useQueries({
     queries: [
-      getMangaQuery(mangaId),
-      getChaptersQuery(mangaId),
-      getChapterImagesQuery(chapterId),
-      getReadMarkersQuery(mangaId), //Ensure read markers are loaded into cache
+      getMangaQuery(mangaId, isDownloaded),
+      getChaptersQuery(mangaId, isDownloaded),
+      getChapterImagesQuery(chapterId, mangaId, isDownloaded),
+      getReadMarkersQuery(mangaId, isDownloaded), //Ensure read markers are loaded into cache
     ],
   });
 
@@ -153,7 +153,9 @@ export default function MangaReaderPage({
         renderItem={({ item, index }) =>
           match(item)
             .with('marker', () => <ChapterEdgeMarker />)
-            .with('end_manga', () => <EndOfManga mangaId={mangaId} />)
+            .with('end_manga', () => (
+              <EndOfManga mangaId={mangaId} isDownloaded={isDownloaded} />
+            ))
             .otherwise(() => (
               <PageItemMemo
                 url={item}
@@ -173,7 +175,9 @@ export default function MangaReaderPage({
         onEndReached={() => {
           //Load next chapter
           //Triggers on last_item
-          markChapterAsRead(mangaId, chapterId);
+          if (!isDownloaded) {
+            markChapterAsRead(mangaId, chapterId);
+          }
           //End of manga
           if (!nextChapter) {
             return;
@@ -207,6 +211,7 @@ export default function MangaReaderPage({
           allChapters={chapters}
           currentPage={currentPage}
           totalPages={pageUrls?.length ?? -1}
+          isDownloaded={isDownloaded}
         />
       )}
     </>

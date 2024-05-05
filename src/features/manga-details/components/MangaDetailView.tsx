@@ -32,6 +32,7 @@ export type MangaDetailViewProps = {
   manga: Manga;
   chapters: Chapter[];
   lastReadChapter?: Chapter;
+  isDownloaded: boolean;
   isFollowing: boolean;
 };
 
@@ -39,6 +40,7 @@ export default function MangaDetailView({
   manga,
   chapters,
   lastReadChapter,
+  isDownloaded,
   isFollowing: isFollowingInital,
 }: MangaDetailViewProps) {
   const navigation = useNavigation<FromMain>();
@@ -109,6 +111,7 @@ export default function MangaDetailView({
             navigation.navigate('MangaReader', {
               chapterId: nextChapterId!,
               mangaId: manga.id!,
+              isDownloaded,
             });
           }}
         >
@@ -127,7 +130,10 @@ export default function MangaDetailView({
         <Pressable
           flex={1}
           onPress={() => {
-            navigation.navigate('ChapterSelect', { mangaId: manga.id! });
+            navigation.navigate('ChapterSelect', {
+              mangaId: manga.id!,
+              isDownloaded,
+            });
           }}
         >
           <Ionicons

@@ -17,6 +17,9 @@ import { useMangadexAuth } from '@/providers/MangadexAuth.provider';
 import { PageParams, ScreenParams } from '@/types/navigation/nav-params';
 import Providers from './Providers';
 
+import './src/config/dayjs-plugins';
+import './src/config/immer-config';
+
 const Tab = createBottomTabNavigator<PageParams>();
 const Stack = createNativeStackNavigator<ScreenParams>();
 

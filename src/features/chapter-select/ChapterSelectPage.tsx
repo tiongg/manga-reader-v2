@@ -17,13 +17,14 @@ import ChapterSelectItemMemo from './ChapterSelectItem';
 
 export type ChapterSelectPageProps = {
   mangaId: string;
+  isDownloaded: boolean;
 };
 
 export default function ChapterSelectPage({
   route,
 }: ScreenProps<'ChapterSelect'>) {
   const {
-    params: { mangaId },
+    params: { mangaId, isDownloaded },
   } = route;
 
   const [
@@ -32,9 +33,9 @@ export default function ChapterSelectPage({
     { data: readChapters, isLoading: isLoadingRead },
   ] = useQueries({
     queries: [
-      getMangaQuery(mangaId),
-      getChaptersQuery(mangaId),
-      getReadMarkersQuery(mangaId),
+      getMangaQuery(mangaId, isDownloaded),
+      getChaptersQuery(mangaId, isDownloaded),
+      getReadMarkersQuery(mangaId, isDownloaded),
     ],
   });
 
@@ -70,6 +71,7 @@ export default function ChapterSelectPage({
               chapter={item}
               manga={manga}
               isRead={readChapters.has(item.id!)}
+              isDownloaded={isDownloaded}
             />
           )}
         />

@@ -1,12 +1,11 @@
 import { useRef } from 'react';
 import { FlatList } from 'react-native';
-import { config } from '@gluestack-ui/config';
 import { RefreshControl, Text, View } from '@gluestack-ui/themed';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { match } from 'ts-pattern';
 
 import PageSpinner from '@/components/PageSpinner';
-import { colors } from '@/config/theme';
+import { colors, theme } from '@/config/theme';
 import { getAllFollowsQuery } from '@/utils/query-options';
 import { getMangas, LIMIT } from '@/utils/service-calls';
 import FollowMangaMemo from './FollowMangaItem';
@@ -74,11 +73,11 @@ export default function FollowsPage() {
         }
         numColumns={4}
         contentContainerStyle={{
-          gap: config.tokens.space['2'],
+          gap: theme.tokens.space['2'],
         }}
         columnWrapperStyle={{
-          paddingHorizontal: config.tokens.space['2'],
-          gap: config.tokens.space['2'],
+          paddingHorizontal: theme.tokens.space['2'],
+          gap: theme.tokens.space['2'],
         }}
         data={followedManga.pages.map((page) => page.data ?? []).flat()}
         renderItem={({ item }) => <FollowMangaMemo manga={item} />}

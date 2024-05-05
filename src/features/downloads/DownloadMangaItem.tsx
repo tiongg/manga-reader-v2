@@ -10,11 +10,11 @@ import { getMangaTitle } from '@/utils/get-manga-title';
 import { getRelationship } from '@/utils/get-relationship';
 import { AuthorRelation } from '@/utils/missing-types';
 
-export type FollowMangaItemProps = {
+export type DownloadMangaItemProps = {
   manga: Manga;
 };
 
-export function FollowMangaItem({ manga }: FollowMangaItemProps) {
+export function DownloadMangaItem({ manga }: DownloadMangaItemProps) {
   const navigation = useNavigation<FromMain>();
   const author = getRelationship<AuthorRelation>(manga, 'author');
 
@@ -30,7 +30,7 @@ export function FollowMangaItem({ manga }: FollowMangaItemProps) {
       onPress={() => {
         navigation.navigate('MangaDetails', {
           mangaId: manga.id!,
-          isDownloaded: false,
+          isDownloaded: true,
         });
       }}
     >
@@ -61,5 +61,5 @@ export function FollowMangaItem({ manga }: FollowMangaItemProps) {
   );
 }
 
-const FollowMangaMemo = memo(FollowMangaItem);
-export default FollowMangaMemo;
+const DownloadMangaMemo = memo(DownloadMangaItem);
+export default DownloadMangaMemo;
