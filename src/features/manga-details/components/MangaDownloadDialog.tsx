@@ -55,10 +55,11 @@ export default function MangaDownloadDialog({
         ),
       onSettled: () => {
         queryClient.invalidateQueries({
-          queryKey: ['downloaded-manga'],
+          queryKey: ['downloaded-manga', 'downloaded-manga-size'],
         });
         queryClient.invalidateQueries({
           queryKey: ['chapters', mangaId, true],
+          exact: true,
         });
       },
     });

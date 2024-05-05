@@ -310,6 +310,15 @@ export async function getDownloadedReadMarkers(mangaId: string) {
 }
 
 /**
+ * Gets size of downloads directory
+ */
+export async function getDownloadFolderSize() {
+  const res = await fs.getInfoAsync(DOWNLOAD_PREFIX);
+  if (!res.exists) return 0;
+  return res.size;
+}
+
+/**
  * Clears ALL downloads in downloads directory
  */
 export async function clearDownloads() {
