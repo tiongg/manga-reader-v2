@@ -16,9 +16,12 @@ import UpdatesPage from '@/features/updates/UpdatesPage';
 import { useMangadexAuth } from '@/providers/MangadexAuth.provider';
 import { PageParams, ScreenParams } from '@/types/navigation/nav-params';
 import Providers from './Providers';
-
+//Configs
 import './src/config/dayjs-plugins';
 import './src/config/immer-config';
+import './src/config/log-box';
+//https://github.com/expo/expo/issues/28618
+import 'react-native-reanimated';
 
 const Tab = createBottomTabNavigator<PageParams>();
 const Stack = createNativeStackNavigator<ScreenParams>();
