@@ -14,7 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
 import { Manga } from 'mangadex-client';
 
-import { colors } from '@/config/theme';
+import { colors, theme } from '@/config/theme';
 import { deleteDownloadedManga } from '@/utils/download-calls';
 import { getMangaTitle } from '@/utils/get-manga-title';
 import { useBoolean } from '@/utils/use-boolean';
@@ -51,7 +51,7 @@ export default function MangaHeaderBar({
       flexDirection="row"
       alignItems="center"
       justifyContent="space-between"
-      padding="$2"
+      paddingHorizontal="$3"
       height={40}
       backgroundColor={colors.backgroundDark950}
     >
@@ -59,7 +59,7 @@ export default function MangaHeaderBar({
         <Ionicons
           style={{ color: colors.textDark0 }}
           name="chevron-back-outline"
-          size={25}
+          size={theme.tokens.fontSizes['2xl']}
         />
       </Pressable>
       <Text
@@ -78,7 +78,7 @@ export default function MangaHeaderBar({
             <Ionicons
               style={{ color: colors.error400 }}
               name="trash-outline"
-              size={25}
+              size={theme.tokens.fontSizes['2xl']}
             />
           </Pressable>
           <AlertDialog isOpen={isDialogOpen} onClose={closeDialog}>
@@ -110,7 +110,11 @@ export default function MangaHeaderBar({
           </AlertDialog>
         </>
       ) : (
-        <Ionicons name="ellipsis-vertical" size={20} color={colors.textDark0} />
+        <Ionicons
+          name="ellipsis-horizontal"
+          size={theme.tokens.fontSizes['2xl']}
+          color={colors.btn}
+        />
       )}
     </Box>
   );

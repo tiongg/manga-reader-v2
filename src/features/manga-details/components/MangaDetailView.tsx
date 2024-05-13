@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentProps } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Box,
@@ -16,7 +16,7 @@ import { capitalize } from 'lodash';
 import { Chapter, Manga } from 'mangadex-client';
 import { match } from 'ts-pattern';
 
-import { colors } from '@/config/theme';
+import { colors, theme } from '@/config/theme';
 import { FromMain } from '@/types/navigation/nav-params';
 import { getCoverArtUrlFromManga } from '@/utils/cover-art-url';
 import { getMangaTitle } from '@/utils/get-manga-title';
@@ -35,6 +35,17 @@ export type MangaDetailViewProps = {
   isDownloaded: boolean;
   isFollowing: boolean;
 };
+
+function ActionIcon({ ...props }: ComponentProps<typeof Ionicons>) {
+  return (
+    <Ionicons
+      style={{ textAlign: 'center' }}
+      color={colors.btn}
+      size={theme.tokens.fontSizes['4xl']}
+      {...props}
+    />
+  );
+}
 
 export default function MangaDetailView({
   manga,
@@ -80,7 +91,7 @@ export default function MangaDetailView({
   const nextChapterId = chapters[nextChapterIndex]?.id;
 
   return (
-    <VStack rowGap="$3" backgroundColor={colors.backgroundDark900}>
+    <VStack rowGap="$2" backgroundColor={colors.backgroundDark900}>
       <Box width="$full" marginTop="$3" display="flex" alignItems="center">
         <Image
           style={{ height: 180, width: '100%' }}
@@ -103,9 +114,10 @@ export default function MangaDetailView({
       <Text textAlign="center" fontSize="$sm" color={colors.textDark400}>
         {author.attributes.name} • {capitalize(status)}
       </Text>
-      <HStack alignItems="center" flex={1} paddingBottom="$4">
+      <HStack alignItems="center" flex={1} paddingBottom="$4" paddingTop="$2">
         <Pressable
           flex={1}
+          disabled={!nextChapterId}
           onPress={() => {
             if (!nextChapterId) return;
             navigation.navigate('MangaReader', {
@@ -115,13 +127,7 @@ export default function MangaDetailView({
             });
           }}
         >
-          <Ionicons
-            style={{ textAlign: 'center' }}
-            color={colors.btn}
-            name="play-outline"
-            size={35}
-            disabled={!nextChapterId}
-          />
+          <ActionIcon name="play-outline" />
           <Text textAlign="center" fontSize="$sm">
             {lastReadChapter ? 'Resume' : 'Read'}
           </Text>
@@ -136,12 +142,7 @@ export default function MangaDetailView({
             });
           }}
         >
-          <Ionicons
-            style={{ textAlign: 'center' }}
-            color={colors.btn}
-            name="list-outline"
-            size={35}
-          />
+          <ActionIcon name="list-outline" />
           <Text textAlign="center" fontSize="$sm">
             {numChapters} Chapters
           </Text>
@@ -160,12 +161,7 @@ export default function MangaDetailView({
           }}
           disabled={isMutatingFollow}
         >
-          <Ionicons
-            style={{ textAlign: 'center' }}
-            color={colors.btn}
-            name={isFollowing ? 'heart' : 'heart-outline'}
-            size={35}
-          />
+          <ActionIcon name={isFollowing ? 'heart' : 'heart-outline'} />
           <Text textAlign="center" fontSize="$sm">
             {isFollowing ? 'Favourited' : 'Favourite'}
           </Text>

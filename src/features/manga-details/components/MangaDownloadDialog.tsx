@@ -16,7 +16,7 @@ import { Chapter, Manga } from 'mangadex-client';
 import { useImmer } from 'use-immer';
 
 import { queryClient } from '@/config/query-client';
-import { colors } from '@/config/theme';
+import { colors, theme } from '@/config/theme';
 import { downloadMangaChapters } from '@/utils/download-calls';
 import { getChapterTitle } from '@/utils/get-chapter-title';
 import { getChaptersQuery } from '@/utils/query-options';
@@ -93,7 +93,11 @@ export default function MangaDownloadDialog({
     <AlertDialogContent height="60%" backgroundColor="$backgroundDark700">
       <AlertDialogHeader justifyContent="space-evenly" paddingHorizontal="$6">
         <Pressable onPress={() => hideDownloadDialog()}>
-          <Ionicons name="close" color={colors.textDark0} size={20} />
+          <Ionicons
+            name="close"
+            color={colors.textDark0}
+            size={theme.tokens.fontSizes['2xl']}
+          />
         </Pressable>
         <Text
           color={colors.textDark0}
@@ -104,7 +108,11 @@ export default function MangaDownloadDialog({
           Download Chapters
         </Text>
         <Pressable onPress={() => selectAllChapters()}>
-          <Ionicons name="checkmark-done" color={colors.textDark0} size={20} />
+          <Ionicons
+            name="checkmark-done"
+            color={colors.textDark0}
+            size={theme.tokens.fontSizes['2xl']}
+          />
         </Pressable>
       </AlertDialogHeader>
       <FlatList<Chapter>
@@ -179,7 +187,7 @@ function DownloadChapterSelectItem({
         onSelected(chapter);
       }}
     >
-      <HStack gap="$1">
+      <HStack gap="$2">
         <Ionicons
           name="checkmark-outline"
           style={{
@@ -187,11 +195,13 @@ function DownloadChapterSelectItem({
             color: isSelected && !isDownloaded ? colors.btn : 'transparent',
             alignSelf: 'center',
           }}
+          size={theme.tokens.fontSizes['md']}
         />
         <Text
           numberOfLines={1}
           color={isDownloaded ? colors.textDark500 : colors.textDark100}
           flex={1}
+          fontSize="$md"
         >
           {chapterTitle}
         </Text>
