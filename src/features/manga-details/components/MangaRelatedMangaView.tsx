@@ -31,7 +31,7 @@ export default function MangaRelatedMangaView({
     return null;
   }
 
-  if (!relatedMangas) {
+  if (!relatedMangas || relatedMangas.length === 0) {
     return null;
   }
 
